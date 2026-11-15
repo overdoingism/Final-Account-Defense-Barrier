@@ -49,14 +49,14 @@ jobs:
       run:
         shell: pwsh
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # 版本號 3.1.* 的 build/revision 由「本地時間」產生，設成台北時區以與本機建置一致
       - name: Set timezone (Taipei)
         run: tzutil /s "Taipei Standard Time"
 
-      - uses: microsoft/setup-msbuild@v2
-      - uses: NuGet/setup-nuget@v2
+      - uses: microsoft/setup-msbuild@v3
+      - uses: NuGet/setup-nuget@v4
 
       - name: Restore NuGet packages
         run: nuget restore "$env:SLN"
@@ -97,7 +97,7 @@ jobs:
           $txt = $txt -replace 'SHA256: [0-9A-Fa-f]{64}', "SHA256: $env:SHA"
           [IO.File]::WriteAllText((Join-Path $pkg "Readme.txt"), $txt, $utf8)
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Final.Account.Defense.Barrier.v${{ steps.info.outputs.version }}
           path: ${{ runner.temp }}/pkg/*
