@@ -2,14 +2,15 @@
 'Copyright (c) 2023 overdoingism Labs.
 'https://github.com/overdoignism/Final-Account-Defense-Barrier
 
-Imports System.Runtime.InteropServices
-Imports System.ComponentModel
-Imports System.Security.Cryptography.X509Certificates
-Imports System.IO
-Imports System.Threading.Tasks
-Imports System.Management
-Imports System.Security.Principal
 Imports System
+Imports System.ComponentModel
+Imports System.IO
+Imports System.Management
+Imports System.Runtime.InteropServices
+Imports System.Security.Cryptography.X509Certificates
+Imports System.Security.Principal
+Imports System.Threading
+Imports System.Threading.Tasks
 
 
 Module Common_Use
@@ -1447,6 +1448,9 @@ Public Class ClipboardHelper2
     Private Const GMEM_MOVEABLE As Integer = &H2
     Private Const GMEM_ZEROINIT As Integer = &H40
 
+    Public Sub EmptyClipboardW32()
+        EmptyClipboard()
+    End Sub
     Public Function SetClipboardText(text As String) As Boolean
 
         If Not OpenClipboard(IntPtr.Zero) Then
@@ -1837,3 +1841,237 @@ Public Module WineDetector
     End Function
 
 End Module
+
+Public NotInheritable Class CpuSpeedReader
+    Implements IDisposable
+
+    Private ReadOnly _pc As PerformanceCounter
+    Private ReadOnly _nominalMhz As Integer
+
+    Public Sub New()
+        _pc = New PerformanceCounter("Processor Information", "% Processor Performance", "_Total", True)
+        _pc.NextValue()      ' 第一次一定回 0，先讀掉
+        _nominalMhz = ReadNominalMhz()
+    End Sub
+
+    ''' <summary>重設取樣起點。</summary>
+    Public Sub Mark()
+        _pc.NextValue()
+    End Sub
+
+    ''' <summary>從上次 Mark/ReadMhz 到現在的平均實際時脈 (MHz)。讀不到回傳 0。</summary>
+    Public Function ReadMhz() As Integer
+        Dim pct As Single = _pc.NextValue()
+        If pct <= 0 OrElse _nominalMhz <= 0 Then Return 0
+        Return CInt(_nominalMhz * pct / 100.0)
+    End Function
+
+    Private Shared Function ReadNominalMhz() As Integer
+        Using key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("HARDWARE\DESCRIPTION\System\CentralProcessor\0")
+            If key Is Nothing Then Return 0
+            Return Convert.ToInt32(key.GetValue("~MHz", 0))
+        End Using
+    End Function
+
+    Public Sub Dispose() Implements IDisposable.Dispose
+        _pc.Dispose()
+    End Sub
+
+End Class
+
+Public Class ProblemFixer
+
+    Public ProblemFixFirstCopy As Integer = 1
+    Public NotUseThis As Boolean = False
+
+    Public Sub PreciseWait(ms As Double)
+
+        If ms = 0 Then Exit Sub
+
+        Dim target As Long = Stopwatch.GetTimestamp() + CLng(ms * Stopwatch.Frequency / 1000.0)
+
+        Dim coarse As Integer = CInt(Math.Floor(ms)) - 2
+        If coarse > 0 Then Thread.Sleep(coarse)
+
+        Do While Stopwatch.GetTimestamp() < target
+            Thread.SpinWait(20)
+        Loop
+    End Sub
+
+    Public Function GetSleepMs(TheCPUMhz As Integer) As Double
+
+        If NotUseThis Then Return 0
+
+        If TheCPUMhz > 3500 Then
+            Return 0
+        Else
+            If ProblemFixFirstCopy = 1 Then
+                ProblemFixFirstCopy = 0
+                Return (3500 - TheCPUMhz) / 200 + 5
+            Else
+                Return (3500 - TheCPUMhz) / 200
+            End If
+        End If
+
+    End Function
+
+End Class
+
+'Public NotInheritable Class CpuBurner
+'    Implements IDisposable
+
+'    <StructLayout(LayoutKind.Sequential)>
+'    Private Structure PROCESSOR_POWER_INFORMATION
+'        Public Number As UInteger
+'        Public MaxMhz As UInteger
+'        Public CurrentMhz As UInteger
+'        Public MhzLimit As UInteger
+'        Public MaxIdleState As UInteger
+'        Public CurrentIdleState As UInteger
+'    End Structure
+
+'    <DllImport("powrprof.dll")>
+'    Private Shared Function CallNtPowerInformation(level As Integer, inBuf As IntPtr, inSize As Integer,
+'            <Out()> outBuf() As PROCESSOR_POWER_INFORMATION, outSize As Integer) As Integer
+'    End Function
+
+'    <DllImport("kernel32.dll")>
+'    Private Shared Function GetCurrentThread() As IntPtr
+'    End Function
+
+'    <DllImport("kernel32.dll", SetLastError:=True)>
+'    Private Shared Function SetThreadPriority(hThread As IntPtr, nPriority As Integer) As Boolean
+'    End Function
+
+'    <DllImport("winmm.dll")>
+'    Private Shared Function timeBeginPeriod(uPeriod As UInteger) As UInteger
+'    End Function
+
+'    <DllImport("winmm.dll")>
+'    Private Shared Function timeEndPeriod(uPeriod As UInteger) As UInteger
+'    End Function
+
+'    Private Const ProcessorInformation As Integer = 11
+'    Private Const THREAD_PRIORITY_IDLE As Integer = -15
+
+'    Private _threads() As Thread
+'    Private _sink() As UInteger
+'    Private _stop As Boolean
+
+'    ''' <summary>開始吃滿所有核心 (idle 優先權)，立刻返回。</summary>
+'    Public Sub Start()
+'        If _threads IsNot Nothing Then Return
+
+'        Dim cores As Integer = Environment.ProcessorCount
+'        _sink = New UInteger(cores - 1) {}
+'        _threads = New Thread(cores - 1) {}
+'        Volatile.Write(_stop, False)
+'        timeBeginPeriod(1)      ' 讓 Thread.Sleep 的精度到 1ms 左右
+
+'        For i As Integer = 0 To cores - 1
+'            Dim idx As Integer = i
+'            _threads(i) = New Thread(
+'                Sub()
+'                    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_IDLE)
+'                    Dim x As UInteger = 2463534242UI
+'                    Do
+'                        For k As Integer = 1 To 20000
+'                            x = x Xor (x << 13)
+'                            x = x Xor (x >> 17)
+'                            x = x Xor (x << 5)
+'                        Next
+'                    Loop Until Volatile.Read(_stop)
+'                    _sink(idx) = x      ' 避免運算被最佳化掉
+'                End Sub)
+'            _threads(i).IsBackground = True
+'            _threads(i).Start()
+'        Next
+'    End Sub
+
+'    ''' <summary>Windows 回報的目前時脈 (MHz，各核心平均)。讀不到回傳 0。</summary>
+'    Public Shared Function ReadCurrentMhz() As Integer
+'        Dim cores As Integer = Environment.ProcessorCount
+'        Dim info(cores - 1) As PROCESSOR_POWER_INFORMATION
+'        Dim size As Integer = cores * Marshal.SizeOf(GetType(PROCESSOR_POWER_INFORMATION))
+'        If CallNtPowerInformation(ProcessorInformation, IntPtr.Zero, 0, info, size) <> 0 Then Return 0
+
+'        Dim total As Long = 0
+'        For Each p As PROCESSOR_POWER_INFORMATION In info
+'            total += p.CurrentMhz
+'        Next
+'        Return CInt(total \ cores)
+'    End Function
+
+'    Public Shared Function GetSleepMs(TheCPUMhz As Integer) As Double
+
+
+'        Select Case TheCPUMhz
+'            Case < 600
+'                Return 35
+'            Case 601 To 650
+'                Return 30
+'            Case 651 To 700
+'                Return 25
+'            Case 701 To 750
+'                Return 20
+'            Case 751 To 800
+'                Return 15
+'            Case 801 To 850
+'                Return 13
+'            Case 851 To 900
+'                Return 11
+'            Case 901 To 950
+'                Return 9
+'            Case 951 To 1000
+'                Return 7
+'            Case 1001 To 1050
+'                Return 5
+'            Case 1051 To 1100
+'                Return 3
+'            Case 1101 To 1150
+'                Return 2
+'            Case 1151 To 1200
+'                Return 1
+'            Case Else
+'                Return 0
+'        End Select
+
+'        'If TheCPUMhz >= 2500 Then Return 0
+'        'If TheCPUMhz <= 500 Then Return 25
+
+'        'Dim TheCoe As Double = (2500 - 790) / 15 '103.46
+'        'Dim TMP_Dbl As Double = (2500 - TheCPUMhz) / TheCoe
+'        'TMP_Dbl = TMP_Dbl * (1 + ((20 - TMP_Dbl) / 10))
+
+'        'If TMP_Dbl <= 0 Then Return 0
+'        'Return TMP_Dbl
+
+'    End Function
+
+'    Public Shared Sub PreciseWait(ms As Double)
+'        Dim target As Long = Stopwatch.GetTimestamp() + CLng(ms * Stopwatch.Frequency / 1000.0)
+
+'        Dim coarse As Integer = CInt(Math.Floor(ms)) - 2
+'        If coarse > 0 Then Thread.Sleep(coarse)
+
+'        Do While Stopwatch.GetTimestamp() < target
+'            Thread.SpinWait(20)
+'        Loop
+'    End Sub
+
+'    ''' <summary>停止燒 CPU。</summary>
+'    Public Sub [Stop]()
+'        If _threads Is Nothing Then Return
+'        Volatile.Write(_stop, True)
+'        For Each t As Thread In _threads
+'            t.Join()
+'        Next
+'        _threads = Nothing
+'        timeEndPeriod(1)
+'    End Sub
+
+'    Public Sub Dispose() Implements IDisposable.Dispose
+'        [Stop]()
+'    End Sub
+
+'End Class

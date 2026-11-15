@@ -1,0 +1,171 @@
+name: Build
+
+# - push / PR 到 main（有改到原始碼時）：只建置並上傳 artifact，用來確認能編譯
+# - 手動執行 (Actions → Build → Run workflow)：
+#     release = false → 只建置，artifact 可下載
+#     release = true  → 建置後自動：
+#         1. 更新 bin/ 內的 exe 與 Readme.txt（版本、SHA256）
+#         2. 更新 README.md 的版本號
+#         3. 在 Readme/HISTORY.md 最上面加入本次更新說明（notes）
+#         4. commit + push 回 main，並建立 GitHub Release（附 zip）
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Source_code_and_Graphics/**"
+      - ".github/workflows/build.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "Source_code_and_Graphics/**"
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "建置後發佈 Release（並更新 bin/、README、HISTORY）"
+        type: boolean
+        default: false
+      notes:
+        description: "本次更新說明（寫入 HISTORY.md 與 Release；多項請用 | 分隔）"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  SLN: Source_code_and_Graphics/Final Account Defense Barrier.sln
+  OUT_EXE: Source_code_and_Graphics/Final Account Defense Barrier/bin/x64/Release/Final Account Defense Barrier.exe
+  REFASM_VERSION: 1.0.3
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      # 版本號 3.1.* 的 build/revision 由「本地時間」產生，設成台北時區以與本機建置一致
+      - name: Set timezone (Taipei)
+        run: tzutil /s "Taipei Standard Time"
+
+      - uses: microsoft/setup-msbuild@v2
+      - uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore "$env:SLN"
+
+      # 不依賴 runner 映像是否裝有 .NET Framework 4.6.2 Targeting Pack
+      - name: Get .NET Framework 4.6.2 reference assemblies
+        run: nuget install Microsoft.NETFramework.ReferenceAssemblies.net462 -Version $env:REFASM_VERSION -OutputDirectory "$env:RUNNER_TEMP/refasm"
+
+      - name: Build (Release|x64)
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP "refasm/Microsoft.NETFramework.ReferenceAssemblies.net462.$env:REFASM_VERSION/build/"
+          msbuild "$env:SLN" /m /nologo /v:minimal /p:Configuration=Release /p:Platform=x64 "/p:TargetFrameworkRootPath=$root"
+
+      - name: Read version & SHA256
+        id: info
+        run: |
+          $exe = Resolve-Path $env:OUT_EXE
+          $ver = [Reflection.AssemblyName]::GetAssemblyName($exe).Version.ToString()
+          $sha = (Get-FileHash $exe -Algorithm SHA256).Hash.ToUpper()
+          "version=$ver" >> $env:GITHUB_OUTPUT
+          "sha256=$sha"  >> $env:GITHUB_OUTPUT
+          "### v$ver`nSHA256: ``$sha``" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "Version: $ver"
+          Write-Host "SHA256 : $sha"
+
+      - name: Prepare package
+        env:
+          VER: ${{ steps.info.outputs.version }}
+          SHA: ${{ steps.info.outputs.sha256 }}
+        run: |
+          $pkg = Join-Path $env:RUNNER_TEMP "pkg"
+          New-Item -ItemType Directory -Force $pkg | Out-Null
+          Copy-Item $env:OUT_EXE $pkg
+          Copy-Item "bin/No_Admin.bat" $pkg
+          $utf8 = New-Object System.Text.UTF8Encoding($false)
+          $txt = [IO.File]::ReadAllText((Resolve-Path "bin/Readme.txt"), $utf8)
+          $txt = $txt -replace 'Final Account Defense Barrier v\d+(\.\d+){3}', "Final Account Defense Barrier v$env:VER"
+          $txt = $txt -replace 'SHA256: [0-9A-Fa-f]{64}', "SHA256: $env:SHA"
+          [IO.File]::WriteAllText((Join-Path $pkg "Readme.txt"), $txt, $utf8)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Final.Account.Defense.Barrier.v${{ steps.info.outputs.version }}
+          path: ${{ runner.temp }}/pkg/*
+          if-no-files-found: error
+
+      # ===== 以下只在手動執行且勾選 release 時進行 =====
+
+      - name: Update bin/, README.md, HISTORY.md
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        env:
+          VER: ${{ steps.info.outputs.version }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          $utf8 = New-Object System.Text.UTF8Encoding($false)
+          $pkg  = Join-Path $env:RUNNER_TEMP "pkg"
+          Copy-Item (Join-Path $pkg "Final Account Defense Barrier.exe") "bin/" -Force
+          Copy-Item (Join-Path $pkg "Readme.txt") "bin/" -Force
+
+          $parts = $env:VER.Split('.')
+          $mm = "$($parts[0]).$($parts[1])"
+
+          # README.md：版本行與標題的 Vx.y
+          $p = Resolve-Path "README.md"
+          $t = [IO.File]::ReadAllText($p, $utf8)
+          $t = $t -replace '(?m)^v\d+\.\d+\.\d+\.\d+(\r?)$', "v$env:VER`$1"
+          $t = $t -replace '(?m)^(## Final Account Defense Barrier .*? V)\d+\.\d+', "`${1}$mm"
+          [IO.File]::WriteAllText($p, $t, $utf8)
+
+          # HISTORY.md：最上面加入本次更新
+          $notes = $env:NOTES.Trim()
+          if ($notes) {
+            $items = @($notes.Split('|') | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+            if ($items.Count -eq 1) { $body = "*  $($items[0])" }
+            else { $i = 0; $body = ($items | ForEach-Object { $i++; "$i. $_" }) -join "`r`n" }
+            $date = (Get-Date).ToString("yyyy/MM/dd")
+            $p = Resolve-Path "Readme/HISTORY.md"
+            $t = [IO.File]::ReadAllText($p, $utf8)
+            if ($t -notmatch "#### v$([regex]::Escape($env:VER)) ") {
+              $t = "#### v$env:VER ($date)`r`n`r`n$body`r`n`r`n" + $t
+              [IO.File]::WriteAllText($p, $t, $utf8)
+            }
+          }
+          git status --short
+
+      - name: Commit & push
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        env:
+          VER: ${{ steps.info.outputs.version }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A bin README.md Readme/HISTORY.md
+          git commit -m "v$env:VER"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Create GitHub Release
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VER: ${{ steps.info.outputs.version }}
+          SHA: ${{ steps.info.outputs.sha256 }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          $zip = Join-Path $env:RUNNER_TEMP "Final.Account.Defense.Barrier.v$env:VER.zip"
+          Compress-Archive -Path (Join-Path $env:RUNNER_TEMP "pkg/*") -DestinationPath $zip -Force
+          $body = "Final Account Defense Barrier v$env:VER`r`n`r`n"
+          $n = $env:NOTES.Trim()
+          if ($n) { $body += (($n.Split('|') | ForEach-Object { "* " + $_.Trim() }) -join "`r`n") + "`r`n`r`n" }
+          $body += "SHA256: $env:SHA`r`n"
+          $sha = git rev-parse HEAD
+          gh release create "v$env:VER" $zip --title "v$env:VER" --notes "$body" --target $sha

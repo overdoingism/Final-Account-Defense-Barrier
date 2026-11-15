@@ -34,6 +34,8 @@ Public Class FormMain
     Dim IsShowingMessage As Boolean
     Dim AccountMoving As Boolean
 
+    Private ReadOnly _speed As New CpuSpeedReader()
+    Dim ProblemFix01 As New ProblemFixer()
 
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -1882,23 +1884,21 @@ Public Class FormMain
         If TheTextBox.Text = "" Then Exit Sub
 
         HotKeyIsWorking = True
-        Thread.Sleep(800)
 
+        Thread.Sleep(770)                               ' ClipboardMonitorBlocker + Key debounce
         StartClipboardMonitorBlocker()
+        Thread.Sleep(30)                                ' ClipboardMonitorBlocker + Key debounce
 
-        Do
-            Try
-                Thread.Sleep(200)
-                'My.Computer.Clipboard.SetText(TheTextBox.Text)
-                Dim CPWorker As New ClipboardHelper2
-                CPWorker.SetClipboardText(TheTextBox.Text)
-                Exit Do
-            Catch ex As Exception
-            End Try
-        Loop
+        _speed.Mark()
 
+        Dim CPWorker As New ClipboardHelper2
+        For attempt As Integer = 1 To 100
+            If CPWorker.SetClipboardText(TheTextBox.Text) Then Exit For
+            Thread.Sleep(50)
+        Next
 
         System.Windows.Forms.SendKeys.Send("^{v}")
+        ProblemFix01.PreciseWait(ProblemFix01.GetSleepMs(_speed.ReadMhz))
         System.Windows.Forms.Clipboard.Clear()
 
         StopClipboardMonitorBlocker()
@@ -1910,8 +1910,6 @@ Public Class FormMain
 
         If TheTextBox.Text = "" Then Exit Sub
         HotKeyIsWorking = True
-
-        Thread.Sleep(800)
 
         Dim TxtLength As Long = TheTextBox.Text.Length
         Dim IDX01 As Integer = 0
@@ -1929,21 +1927,21 @@ Public Class FormMain
             IDX01 += 1
         Next
 
+        Thread.Sleep(770)                               ' ClipboardMonitorBlocker + Key debounce
         StartClipboardMonitorBlocker()
+        Thread.Sleep(30)                                ' ClipboardMonitorBlocker + Key debounce
 
-        Do
-            Try
-                Thread.Sleep(200)
-                Dim CPWorker As New ClipboardHelper2
-                CPWorker.SetClipboardText(SB2.ToString)
-                Exit Do
-            Catch ex As Exception
-            End Try
-        Loop
+        _speed.Mark()
+
+        Dim CPWorker As New ClipboardHelper2
+        For attempt As Integer = 1 To 100
+            If CPWorker.SetClipboardText(SB2.ToString) Then Exit For
+            Thread.Sleep(50)
+        Next
 
         System.Windows.Forms.SendKeys.Send("^{v}{home}")
+        ProblemFix01.PreciseWait(ProblemFix01.GetSleepMs(_speed.ReadMhz))
         System.Windows.Forms.Clipboard.Clear()
-
         System.Windows.Forms.SendKeys.Send(SB1.ToString)
 
         StopClipboardMonitorBlocker()
@@ -1960,9 +1958,13 @@ Public Class FormMain
         If TheTextBox.Text.Length > 0 Then
             StartClipboardMonitorBlocker()
 
+            Dim TryLimited As Integer = 0
+
             Do
                 Try
-                    Thread.Sleep(200)
+                    TryLimited += 1
+                    If TryLimited = 100 Then Exit Do
+                    Thread.Sleep(100)
                     'My.Computer.Clipboard.SetText(TheTextBox.Text)
                     Dim CPWorker As New ClipboardHelper2
                     CPWorker.SetClipboardText(TheTextBox.Text)
