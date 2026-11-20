@@ -10,8 +10,8 @@ https://github.com/overdoignism/Final-Account-Defense-Barrier
 
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
 
-Final Account Defense Barrier v3.1.9815.41648
+Final Account Defense Barrier v3.2.9821.7644
 
-SHA256: A3E1C3C1F632453C7D1696D72173AE6BCD2CB28CC16445642E6A7D78A874A5BA
+SHA256: EA261CD1601FB452255A1F5B05BAD450EE0E1B2977F9BF293132DAD2E545A574
 
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
