@@ -26,7 +26,10 @@ Public Class FormFileExplorer
         LSCB_UPDW.Enabled = False
         LSCB_MSC.Interval = 100
         LSCB_MSC.Enabled = False
-        LB_Ration = ListBoxFiles.ClientRectangle.Height / ListBoxFiles.ItemHeight
+        ' Whole rows only: the list scrolls until its last row is fully visible, so the furthest it can go is
+        ' "rows - whole rows that fit". At 100% the list is exactly 14 rows high; at other scales it is not,
+        ' and counting the part row let the bar run past the end of its track.
+        LB_Ration = Math.Floor(ListBoxFiles.ClientRectangle.Height / ListBoxFiles.ItemHeight)
 
         Dim drives() As DriveInfo = DriveInfo.GetDrives()
         ReDim DriverList(2)
@@ -178,7 +181,7 @@ Public Class FormFileExplorer
             ButtonFileOpen.Image = B_OpenF_DI
         Else
             ButtonFileOpen.Enabled = True
-            ButtonFileOpen.Image = My.Resources.Resource1.button_OpenF
+            ButtonFileOpen.Image = UIArt.button_OpenF
         End If
 
         LSCBBAR_GoCorrectPos()
@@ -368,7 +371,7 @@ Public Class FormFileExplorer
         If LB_Range_Scale > 0 Then
             Dim TmpDbl As Double = CDbl(ListBoxFiles.TopIndex) / LB_Range_Scale
             TmpDbl *= CDbl(DwY - UpY)
-            LSCBBAR.Top = CInt(TmpDbl + UpY)
+            LSCBBAR.Top = Math.Max(UpY, Math.Min(DwY, CInt(TmpDbl + UpY)))
         Else
             LSCBBAR.Top = UpY
         End If
@@ -431,9 +434,9 @@ Public Class FormFileExplorer
     End Sub
 
     '=============== Button Visual Work =========================
-    Dim B_OpenF As New Bitmap(My.Resources.Resource1.button_OpenF)
-    Dim B_OpenF_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_OpenF)
-    Dim B_Cancel_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_Cancel)
+    Dim B_OpenF As New Bitmap(UIArt.button_OpenF)
+    Dim B_OpenF_on As Bitmap = Make_Button_brighter(UIArt.button_OpenF)
+    Dim B_Cancel_on As Bitmap = Make_Button_brighter(UIArt.button_Cancel)
 
     Private Sub Mouse_Enter(sender As Object, e As EventArgs) Handles _
         ButtonFileOpen.MouseEnter, ButtonCancel.MouseEnter
@@ -447,8 +450,8 @@ Public Class FormFileExplorer
 
     End Sub
 
-    Dim B_OpenF_DI As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_OpenF)
-    Dim B_Cancel As New Bitmap(My.Resources.Resource1.button_Cancel)
+    Dim B_OpenF_DI As Bitmap = Make_Button_Gray(UIArt.button_OpenF)
+    Dim B_Cancel As New Bitmap(UIArt.button_Cancel)
 
     Private Sub Mouse_Leave(sender As Object, e As EventArgs) Handles _
         ButtonFileOpen.MouseLeave, ButtonCancel.MouseLeave

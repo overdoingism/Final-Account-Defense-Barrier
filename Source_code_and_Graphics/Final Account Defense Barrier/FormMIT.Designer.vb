@@ -47,7 +47,7 @@ Partial Class FormMIT
         'PictureBox1
         '
         Me.PictureBox1.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.PictureBox1.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.exit_Pic
+        Me.PictureBox1.Image = Global.Final_Account_Defense_Barrier.UIArt.exit_Pic
         Me.PictureBox1.Location = New System.Drawing.Point(377, 454)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(40, 40)
@@ -67,7 +67,7 @@ Partial Class FormMIT
         'DocLeft
         '
         Me.DocLeft.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.DocLeft.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.Arr_Left
+        Me.DocLeft.Image = Global.Final_Account_Defense_Barrier.UIArt.Arr_Left
         Me.DocLeft.Location = New System.Drawing.Point(125, 471)
         Me.DocLeft.Name = "DocLeft"
         Me.DocLeft.Size = New System.Drawing.Size(56, 25)
@@ -86,7 +86,7 @@ Partial Class FormMIT
         '
         'PictureMIT
         '
-        Me.PictureMIT.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.mit_lic
+        Me.PictureMIT.Image = Global.Final_Account_Defense_Barrier.UIArt.mit_lic
         Me.PictureMIT.Location = New System.Drawing.Point(0, 0)
         Me.PictureMIT.Name = "PictureMIT"
         Me.PictureMIT.Size = New System.Drawing.Size(448, 527)

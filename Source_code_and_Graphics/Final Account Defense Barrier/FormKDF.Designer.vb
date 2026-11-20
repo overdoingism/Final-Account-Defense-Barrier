@@ -76,7 +76,7 @@ Partial Class FormKDF
         'PicKDF_TYPE
         '
         Me.PicKDF_TYPE.BackColor = System.Drawing.Color.Black
-        Me.PicKDF_TYPE.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.KDFT_Types
+        Me.PicKDF_TYPE.Image = Global.Final_Account_Defense_Barrier.UIArt.KDFT_Types
         Me.PicKDF_TYPE.Location = New System.Drawing.Point(112, 18)
         Me.PicKDF_TYPE.Name = "PicKDF_TYPE"
         Me.PicKDF_TYPE.Size = New System.Drawing.Size(36, 13)
@@ -86,7 +86,7 @@ Partial Class FormKDF
         'PR01
         '
         Me.PR01.BackColor = System.Drawing.Color.Black
-        Me.PR01.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR01.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR01.Location = New System.Drawing.Point(82, 270)
         Me.PR01.Name = "PR01"
         Me.PR01.Size = New System.Drawing.Size(28, 22)
@@ -97,7 +97,7 @@ Partial Class FormKDF
         'PWD_LINE
         '
         Me.PWD_LINE.BackColor = System.Drawing.Color.Black
-        Me.PWD_LINE.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_LINE
+        Me.PWD_LINE.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_LINE
         Me.PWD_LINE.Location = New System.Drawing.Point(5, 93)
         Me.PWD_LINE.Name = "PWD_LINE"
         Me.PWD_LINE.Size = New System.Drawing.Size(144, 3)
@@ -107,7 +107,7 @@ Partial Class FormKDF
         'PWD_PASS
         '
         Me.PWD_PASS.BackColor = System.Drawing.Color.Black
-        Me.PWD_PASS.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_PASS
+        Me.PWD_PASS.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_PASS
         Me.PWD_PASS.Location = New System.Drawing.Point(115, 65)
         Me.PWD_PASS.Name = "PWD_PASS"
         Me.PWD_PASS.Size = New System.Drawing.Size(35, 27)
@@ -129,7 +129,7 @@ Partial Class FormKDF
         'PR09
         '
         Me.PR09.BackColor = System.Drawing.Color.Black
-        Me.PR09.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR09.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR09.Location = New System.Drawing.Point(82, 94)
         Me.PR09.Name = "PR09"
         Me.PR09.Size = New System.Drawing.Size(28, 22)
@@ -140,7 +140,7 @@ Partial Class FormKDF
         'PR08
         '
         Me.PR08.BackColor = System.Drawing.Color.Black
-        Me.PR08.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR08.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR08.Location = New System.Drawing.Point(82, 116)
         Me.PR08.Name = "PR08"
         Me.PR08.Size = New System.Drawing.Size(28, 22)
@@ -151,7 +151,7 @@ Partial Class FormKDF
         'PR07
         '
         Me.PR07.BackColor = System.Drawing.Color.Black
-        Me.PR07.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR07.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR07.Location = New System.Drawing.Point(82, 138)
         Me.PR07.Name = "PR07"
         Me.PR07.Size = New System.Drawing.Size(28, 22)
@@ -162,7 +162,7 @@ Partial Class FormKDF
         'PR06
         '
         Me.PR06.BackColor = System.Drawing.Color.Black
-        Me.PR06.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR06.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR06.Location = New System.Drawing.Point(82, 160)
         Me.PR06.Name = "PR06"
         Me.PR06.Size = New System.Drawing.Size(28, 22)
@@ -173,7 +173,7 @@ Partial Class FormKDF
         'PR05
         '
         Me.PR05.BackColor = System.Drawing.Color.Black
-        Me.PR05.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR05.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR05.Location = New System.Drawing.Point(82, 182)
         Me.PR05.Name = "PR05"
         Me.PR05.Size = New System.Drawing.Size(28, 22)
@@ -184,7 +184,7 @@ Partial Class FormKDF
         'PR04
         '
         Me.PR04.BackColor = System.Drawing.Color.Black
-        Me.PR04.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR04.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR04.Location = New System.Drawing.Point(82, 204)
         Me.PR04.Name = "PR04"
         Me.PR04.Size = New System.Drawing.Size(28, 22)
@@ -195,7 +195,7 @@ Partial Class FormKDF
         'PR03
         '
         Me.PR03.BackColor = System.Drawing.Color.Black
-        Me.PR03.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR03.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR03.Location = New System.Drawing.Point(82, 226)
         Me.PR03.Name = "PR03"
         Me.PR03.Size = New System.Drawing.Size(28, 22)
@@ -206,7 +206,7 @@ Partial Class FormKDF
         'PR02
         '
         Me.PR02.BackColor = System.Drawing.Color.Black
-        Me.PR02.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PR02.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PR02.Location = New System.Drawing.Point(82, 248)
         Me.PR02.Name = "PR02"
         Me.PR02.Size = New System.Drawing.Size(28, 22)
@@ -228,7 +228,7 @@ Partial Class FormKDF
         'PL09
         '
         Me.PL09.BackColor = System.Drawing.Color.Black
-        Me.PL09.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL09.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL09.Location = New System.Drawing.Point(45, 94)
         Me.PL09.Name = "PL09"
         Me.PL09.Size = New System.Drawing.Size(28, 22)
@@ -239,7 +239,7 @@ Partial Class FormKDF
         'PL08
         '
         Me.PL08.BackColor = System.Drawing.Color.Black
-        Me.PL08.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL08.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL08.Location = New System.Drawing.Point(45, 116)
         Me.PL08.Name = "PL08"
         Me.PL08.Size = New System.Drawing.Size(28, 22)
@@ -250,7 +250,7 @@ Partial Class FormKDF
         'PL07
         '
         Me.PL07.BackColor = System.Drawing.Color.Black
-        Me.PL07.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL07.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL07.Location = New System.Drawing.Point(45, 138)
         Me.PL07.Name = "PL07"
         Me.PL07.Size = New System.Drawing.Size(28, 22)
@@ -261,7 +261,7 @@ Partial Class FormKDF
         'PL06
         '
         Me.PL06.BackColor = System.Drawing.Color.Black
-        Me.PL06.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL06.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL06.Location = New System.Drawing.Point(45, 160)
         Me.PL06.Name = "PL06"
         Me.PL06.Size = New System.Drawing.Size(28, 22)
@@ -272,7 +272,7 @@ Partial Class FormKDF
         'PL05
         '
         Me.PL05.BackColor = System.Drawing.Color.Black
-        Me.PL05.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL05.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL05.Location = New System.Drawing.Point(45, 182)
         Me.PL05.Name = "PL05"
         Me.PL05.Size = New System.Drawing.Size(28, 22)
@@ -283,7 +283,7 @@ Partial Class FormKDF
         'PL04
         '
         Me.PL04.BackColor = System.Drawing.Color.Black
-        Me.PL04.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL04.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL04.Location = New System.Drawing.Point(45, 204)
         Me.PL04.Name = "PL04"
         Me.PL04.Size = New System.Drawing.Size(28, 22)
@@ -294,7 +294,7 @@ Partial Class FormKDF
         'PL03
         '
         Me.PL03.BackColor = System.Drawing.Color.Black
-        Me.PL03.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL03.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL03.Location = New System.Drawing.Point(45, 226)
         Me.PL03.Name = "PL03"
         Me.PL03.Size = New System.Drawing.Size(28, 22)
@@ -305,7 +305,7 @@ Partial Class FormKDF
         'PL02
         '
         Me.PL02.BackColor = System.Drawing.Color.Black
-        Me.PL02.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL02.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL02.Location = New System.Drawing.Point(45, 248)
         Me.PL02.Name = "PL02"
         Me.PL02.Size = New System.Drawing.Size(28, 22)
@@ -316,7 +316,7 @@ Partial Class FormKDF
         'PL01
         '
         Me.PL01.BackColor = System.Drawing.Color.Black
-        Me.PL01.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF_R
+        Me.PL01.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF_R
         Me.PL01.Location = New System.Drawing.Point(45, 270)
         Me.PL01.Name = "PL01"
         Me.PL01.Size = New System.Drawing.Size(28, 22)
@@ -326,7 +326,7 @@ Partial Class FormKDF
         '
         'PictureBoxKDF
         '
-        Me.PictureBoxKDF.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PWD_KDF
+        Me.PictureBoxKDF.Image = Global.Final_Account_Defense_Barrier.UIArt.PWD_KDF
         Me.PictureBoxKDF.Location = New System.Drawing.Point(0, 0)
         Me.PictureBoxKDF.Name = "PictureBoxKDF"
         Me.PictureBoxKDF.Size = New System.Drawing.Size(155, 316)

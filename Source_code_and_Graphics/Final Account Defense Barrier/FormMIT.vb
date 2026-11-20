@@ -7,7 +7,7 @@ Public Class FormMIT
     Private lastLocation As Point
     Private isMouseDown As Boolean = False
     Public NowPage As Integer = 0
-    Dim DocPage(2) As Bitmap
+    Dim DocPage(3) As Bitmap
 
     Private Sub FormMIT_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -18,11 +18,13 @@ Public Class FormMIT
         'PictureLICENSEBack.Image = Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.MIT_DOC_PNG))
         'PictureBoxTXT.Image = My.Resources.Resource1.Doc01P
 
-        Dim BackPaper As Bitmap = CreateGradientBitmap(423, 470)
+        Dim FirstPage As Bitmap = UIArt.Doc01P_PNG
+        Dim BackPaper As Bitmap = CreateGradientBitmap(FirstPage.Width, FirstPage.Height)
 
-        DocPage(0) = TwoBmpStack(BackPaper, Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Doc01P_PNG)))
-        DocPage(1) = TwoBmpStack(BackPaper, Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Doc02P_PNG)))
-        DocPage(2) = TwoBmpStack(BackPaper, Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Doc03P_PNG)))
+        DocPage(0) = TwoBmpStack(BackPaper, FirstPage)
+        DocPage(1) = TwoBmpStack(BackPaper, UIArt.Doc02P_PNG)
+        DocPage(2) = TwoBmpStack(BackPaper, UIArt.Doc03P_PNG)
+        DocPage(3) = TwoBmpStack(BackPaper, UIArt.Doc04P_PNG)
 
         PictureLICENSEBack.Image = DocPage(0)
 
@@ -35,12 +37,12 @@ Public Class FormMIT
         DocRight.Visible = True
         DocLeft.Visible = True
 
-        If NowPage < 2 Then
+        If NowPage < 3 Then
             NowPage += 1
             PictureLICENSEBack.Image = DocPage(NowPage)
         End If
 
-        If NowPage = 2 Then DocRight.Visible = False
+        If NowPage = 3 Then DocRight.Visible = False
 
     End Sub
 

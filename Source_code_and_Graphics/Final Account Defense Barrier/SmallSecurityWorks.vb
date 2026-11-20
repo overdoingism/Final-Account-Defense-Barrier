@@ -101,7 +101,14 @@ Public Class SmallSecurtiyWorkers : Implements IDisposable
 
     End Function
 
-    Public Function EvaPwdStrong(ByRef InTextbox As System.Windows.Forms.TextBox) As Color
+    ''' <summary>
+    ''' Rates the text of a password box: returns the colour for that box and hands the rating back in
+    ''' Strength (0 = poor, 1 = moderate, 2 = high). It does not touch Sys_Chk: which rating counts as the
+    ''' "Login Key Strength" of the security report is the caller's business (only the key of a login does,
+    ''' see LogInFormWork). It used to write Sys_Chk._LoginKeyStrength itself, so any password typed later
+    ''' - an account's password, the key of another catalog, the key asked for a CSV export - replaced it.
+    ''' </summary>
+    Public Function EvaPwdStrong(ByRef InTextbox As System.Windows.Forms.TextBox, ByRef Strength As Integer) As Color
 
         Dim Score As Integer = 0
         Dim SNum As Boolean = False
@@ -131,13 +138,13 @@ Public Class SmallSecurtiyWorkers : Implements IDisposable
         If SSig Then Score += 3
 
         If Score < 16 Then
-            Sys_Chk._LoginKeyStrength = 0
+            Strength = 0
             Return Color.FromArgb(224, 0, 0)
         ElseIf Score < 28 Then
-            Sys_Chk._LoginKeyStrength = 1
+            Strength = 1
             Return Color.FromArgb(176, 176, 0)
         Else
-            Sys_Chk._LoginKeyStrength = 2
+            Strength = 2
             Return Color.FromArgb(0, 224, 0)
         End If
 

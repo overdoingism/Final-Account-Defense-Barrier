@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # 版本號 3.1.* 的 build/revision 由「本地時間」產生，設成台北時區以與本機建置一致
+      # 版本號 3.2.* 的 build/revision 由「本地時間」產生，設成台北時區以與本機建置一致
       - name: Set timezone (Taipei)
         run: tzutil /s "Taipei Standard Time"
 

@@ -120,7 +120,7 @@ Partial Class FormLogin
         '
         Me.PicLangLoad.BackColor = System.Drawing.Color.Black
         Me.PicLangLoad.Cursor = System.Windows.Forms.Cursors.Default
-        Me.PicLangLoad.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.Lang_load
+        Me.PicLangLoad.Image = Global.Final_Account_Defense_Barrier.UIArt.Lang_load
         Me.PicLangLoad.Location = New System.Drawing.Point(398, 12)
         Me.PicLangLoad.Name = "PicLangLoad"
         Me.PicLangLoad.Size = New System.Drawing.Size(123, 22)
@@ -132,7 +132,7 @@ Partial Class FormLogin
         '
         Me.ButtonRightArr.BackColor = System.Drawing.Color.Black
         Me.ButtonRightArr.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonRightArr.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.Lang_arr
+        Me.ButtonRightArr.Image = Global.Final_Account_Defense_Barrier.UIArt.Lang_arr
         Me.ButtonRightArr.Location = New System.Drawing.Point(506, 40)
         Me.ButtonRightArr.Name = "ButtonRightArr"
         Me.ButtonRightArr.Size = New System.Drawing.Size(15, 22)
@@ -144,7 +144,7 @@ Partial Class FormLogin
         '
         Me.ButtonRightArr2.BackColor = System.Drawing.Color.Black
         Me.ButtonRightArr2.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonRightArr2.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.NextClick
+        Me.ButtonRightArr2.Image = Global.Final_Account_Defense_Barrier.UIArt.NextClick
         Me.ButtonRightArr2.Location = New System.Drawing.Point(448, 543)
         Me.ButtonRightArr2.Name = "ButtonRightArr2"
         Me.ButtonRightArr2.Size = New System.Drawing.Size(20, 24)
@@ -156,7 +156,7 @@ Partial Class FormLogin
         Me.ButtonPFWS.BackColor = System.Drawing.Color.Black
         Me.ButtonPFWS.Cursor = System.Windows.Forms.Cursors.Hand
         Me.ButtonPFWS.Enabled = False
-        Me.ButtonPFWS.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PFWS_RA
+        Me.ButtonPFWS.Image = Global.Final_Account_Defense_Barrier.UIArt.PFWS_RA
         Me.ButtonPFWS.Location = New System.Drawing.Point(291, 184)
         Me.ButtonPFWS.Name = "ButtonPFWS"
         Me.ButtonPFWS.Size = New System.Drawing.Size(160, 33)
@@ -168,7 +168,7 @@ Partial Class FormLogin
         '
         Me.ButtonFin.BackColor = System.Drawing.Color.Black
         Me.ButtonFin.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonFin.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_Final
+        Me.ButtonFin.Image = Global.Final_Account_Defense_Barrier.UIArt.button_Final
         Me.ButtonFin.Location = New System.Drawing.Point(276, 461)
         Me.ButtonFin.Name = "ButtonFin"
         Me.ButtonFin.Size = New System.Drawing.Size(112, 61)
@@ -201,7 +201,7 @@ Partial Class FormLogin
         '
         Me.ButtonWinMin.BackColor = System.Drawing.Color.Black
         Me.ButtonWinMin.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonWinMin.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.WinMin
+        Me.ButtonWinMin.Image = Global.Final_Account_Defense_Barrier.UIArt.WinMin
         Me.ButtonWinMin.Location = New System.Drawing.Point(140, 7)
         Me.ButtonWinMin.Name = "ButtonWinMin"
         Me.ButtonWinMin.Size = New System.Drawing.Size(30, 26)
@@ -212,7 +212,7 @@ Partial Class FormLogin
         '
         Me.ButtonMIT.BackColor = System.Drawing.Color.Black
         Me.ButtonMIT.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonMIT.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.mit_Btn
+        Me.ButtonMIT.Image = Global.Final_Account_Defense_Barrier.UIArt.mit_Btn
         Me.ButtonMIT.Location = New System.Drawing.Point(347, 602)
         Me.ButtonMIT.Name = "ButtonMIT"
         Me.ButtonMIT.Size = New System.Drawing.Size(125, 36)
@@ -223,7 +223,7 @@ Partial Class FormLogin
         '
         Me.ButtonHAGP.BackColor = System.Drawing.Color.Black
         Me.ButtonHAGP.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonHAGP.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_HELP
+        Me.ButtonHAGP.Image = Global.Final_Account_Defense_Barrier.UIArt.button_HELP
         Me.ButtonHAGP.Location = New System.Drawing.Point(405, 461)
         Me.ButtonHAGP.Name = "ButtonHAGP"
         Me.ButtonHAGP.Size = New System.Drawing.Size(112, 61)
@@ -234,7 +234,7 @@ Partial Class FormLogin
         '
         Me.ButtonCancel.BackColor = System.Drawing.Color.Black
         Me.ButtonCancel.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_Cancel
+        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.UIArt.button_Cancel
         Me.ButtonCancel.Location = New System.Drawing.Point(276, 461)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(112, 61)
@@ -245,7 +245,7 @@ Partial Class FormLogin
         '
         Me.ButtonFileOpen.BackColor = System.Drawing.Color.Black
         Me.ButtonFileOpen.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonFileOpen.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_OpenF
+        Me.ButtonFileOpen.Image = Global.Final_Account_Defense_Barrier.UIArt.button_OpenF
         Me.ButtonFileOpen.Location = New System.Drawing.Point(147, 461)
         Me.ButtonFileOpen.Name = "ButtonFileOpen"
         Me.ButtonFileOpen.Size = New System.Drawing.Size(112, 61)
@@ -257,7 +257,7 @@ Partial Class FormLogin
         Me.ButtonOK.BackColor = System.Drawing.Color.Black
         Me.ButtonOK.Cursor = System.Windows.Forms.Cursors.Hand
         Me.ButtonOK.Enabled = False
-        Me.ButtonOK.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_confirm
+        Me.ButtonOK.Image = Global.Final_Account_Defense_Barrier.UIArt.button_confirm
         Me.ButtonOK.Location = New System.Drawing.Point(18, 461)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(112, 61)
@@ -268,7 +268,7 @@ Partial Class FormLogin
         '
         Me.ButtonViewPass.BackColor = System.Drawing.Color.Black
         Me.ButtonViewPass.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonViewPass.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.PASSWORD_HIDE
+        Me.ButtonViewPass.Image = Global.Final_Account_Defense_Barrier.UIArt.PASSWORD_HIDE
         Me.ButtonViewPass.Location = New System.Drawing.Point(385, 416)
         Me.ButtonViewPass.Name = "ButtonViewPass"
         Me.ButtonViewPass.Size = New System.Drawing.Size(134, 33)
@@ -279,7 +279,7 @@ Partial Class FormLogin
         '
         Me.ButtonCaps.BackColor = System.Drawing.Color.Black
         Me.ButtonCaps.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonCaps.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.caps_lock_off
+        Me.ButtonCaps.Image = Global.Final_Account_Defense_Barrier.UIArt.caps_lock_off
         Me.ButtonCaps.Location = New System.Drawing.Point(385, 244)
         Me.ButtonCaps.Name = "ButtonCaps"
         Me.ButtonCaps.Size = New System.Drawing.Size(134, 33)
@@ -288,7 +288,7 @@ Partial Class FormLogin
         '
         'PictureBoxLogin
         '
-        Me.PictureBoxLogin.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.Title_LOGIN
+        Me.PictureBoxLogin.Image = Global.Final_Account_Defense_Barrier.UIArt.Title_LOGIN
         Me.PictureBoxLogin.Location = New System.Drawing.Point(0, 0)
         Me.PictureBoxLogin.Name = "PictureBoxLogin"
         Me.PictureBoxLogin.Size = New System.Drawing.Size(535, 693)
@@ -308,7 +308,7 @@ Partial Class FormLogin
         '
         Me.PicWarn.BackColor = System.Drawing.Color.Black
         Me.PicWarn.Cursor = System.Windows.Forms.Cursors.Default
-        Me.PicWarn.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.WARN_1
+        Me.PicWarn.Image = Global.Final_Account_Defense_Barrier.UIArt.WARN_1
         Me.PicWarn.Location = New System.Drawing.Point(171, 40)
         Me.PicWarn.Name = "PicWarn"
         Me.PicWarn.Size = New System.Drawing.Size(139, 22)

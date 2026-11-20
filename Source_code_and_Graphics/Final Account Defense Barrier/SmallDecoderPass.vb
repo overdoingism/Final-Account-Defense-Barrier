@@ -11,7 +11,7 @@ Public Class SmallDecoderPass
     Public CopySucess As Boolean
     Private FillTrash() As String
     Public TextBoxPWDStr As New TextBox
-    Public PictureBoxPwd As New Bitmap(505, 22) 'PictureBox
+    Public PictureBoxPwd As New Bitmap(UIArt.S(505), UIArt.S(22)) 'PictureBox
 
     Private Sub SmallDecoder_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -64,14 +64,14 @@ Public Class SmallDecoderPass
         Dim GrA As Graphics = Graphics.FromImage(BitA)
         Dim Brs1 As Brush = New System.Drawing.SolidBrush(Color.Black)
 
-        Dim LeftMove As Integer = 5
+        Dim LeftMove As Integer = UIArt.S(5)
         GrA.Clear(Color.White)
 
         GrA.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias
 
         For Each TmpChar As Char In TheTextbox.Text
             Dim textSize As SizeF = GrA.MeasureString(TmpChar.ToString(), RndFnt(0), Nothing, Nothing, 1, 1)
-            GrA.DrawString(TmpChar, RndFnt(0), Brs1, LeftMove, (Pic_H / 2) - 7)
+            GrA.DrawString(TmpChar, RndFnt(0), Brs1, LeftMove, (Pic_H / 2) - UIArt.S(7))
             LeftMove += (textSize.Width * 0.7)
         Next
 

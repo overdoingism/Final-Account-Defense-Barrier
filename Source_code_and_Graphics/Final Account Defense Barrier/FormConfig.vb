@@ -33,7 +33,7 @@ Public Class FormConfig
             ButtonCSVEx.Enabled = False
             ButtonCSVIM.Image = B_CAT_CSVIM_dis
             ButtonCSVIM.Enabled = False
-            PIC_READONLY.Image = New Bitmap(My.Resources.Resource1.Read_Only_Img)
+            PIC_READONLY.Image = New Bitmap(UIArt.Read_Only_Img)
             PIC_READONLY.Visible = True
         End If
 
@@ -108,7 +108,7 @@ Public Class FormConfig
     Private Shared Function ReleaseDC(ByVal hWnd As IntPtr, ByVal hDC As IntPtr) As Integer
     End Function
 
-    Dim CBOX_AR As New Bitmap(My.Resources.Resource1.CBOX_AR)
+    Dim CBOX_AR As New Bitmap(UIArt.CBOX_AR)
 
     Private Sub RedrawComboBox(whatBoxToRedraw As ComboBox)
 
@@ -117,9 +117,10 @@ Public Class FormConfig
         Dim hdc As IntPtr = GetWindowDC(whatBoxToRedraw.Handle)
         Using g As Graphics = Graphics.FromHdc(hdc)
             ' 在這裡繪製任何你想要的東西，比如藍色邊框
-            Dim rect As New Rectangle(1, 1, whatBoxToRedraw.Width - 2, whatBoxToRedraw.Height - 2)
-            g.DrawRectangle(New Pen(BColor, 2), rect)
-            g.DrawImage(CBOX_AR, whatBoxToRedraw.Width - 18, 0)
+            Dim BW As Integer = Math.Max(1, UIArt.S(2))
+            Dim rect As New Rectangle(BW \ 2, BW \ 2, whatBoxToRedraw.Width - BW, whatBoxToRedraw.Height - BW)
+            g.DrawRectangle(New Pen(BColor, BW), rect)
+            g.DrawImage(CBOX_AR, whatBoxToRedraw.Width - CBOX_AR.Width, 0, CBOX_AR.Width, CBOX_AR.Height)
         End Using
         ReleaseDC(whatBoxToRedraw.Handle, hdc)
 
@@ -251,12 +252,12 @@ Public Class FormConfig
 
     '================================ Button visual work ================
 
-    Dim B_confirm As New Bitmap(My.Resources.Resource1.button_confirm)
-    Dim B_Cancel As New Bitmap(My.Resources.Resource1.button_Cancel)
-    Dim B_CAT_DEL As New Bitmap(My.Resources.Resource1.button_CAT_DEL)
-    Dim B_CAT_TRA As New Bitmap(My.Resources.Resource1.button_CAT_TRANS)
-    Dim B_CAT_CSVIM As New Bitmap(My.Resources.Resource1.button_CAT_CSVIM)
-    Dim B_CAT_CSVEX As New Bitmap(My.Resources.Resource1.button_CAT_CSVEX)
+    Dim B_confirm As New Bitmap(UIArt.button_confirm)
+    Dim B_Cancel As New Bitmap(UIArt.button_Cancel)
+    Dim B_CAT_DEL As New Bitmap(UIArt.button_CAT_DEL)
+    Dim B_CAT_TRA As New Bitmap(UIArt.button_CAT_TRANS)
+    Dim B_CAT_CSVIM As New Bitmap(UIArt.button_CAT_CSVIM)
+    Dim B_CAT_CSVEX As New Bitmap(UIArt.button_CAT_CSVEX)
 
 
     Private Sub Mouse_Leave(sender As Object, e As EventArgs) Handles ButtonOK.MouseLeave,
@@ -279,16 +280,16 @@ Public Class FormConfig
         End Select
     End Sub
 
-    Dim B_confirm_dis As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_confirm)
-    Dim B_CAT_DEL_dis As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_CAT_DEL)
-    Dim B_CAT_TRA_dis As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_CAT_TRANS)
-    Dim B_CAT_CSVIM_dis As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_CAT_CSVIM)
-    Dim B_CAT_CSVEX_dis As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_CAT_CSVEX)
+    Dim B_confirm_dis As Bitmap = Make_Button_Gray(UIArt.button_confirm)
+    Dim B_CAT_DEL_dis As Bitmap = Make_Button_Gray(UIArt.button_CAT_DEL)
+    Dim B_CAT_TRA_dis As Bitmap = Make_Button_Gray(UIArt.button_CAT_TRANS)
+    Dim B_CAT_CSVIM_dis As Bitmap = Make_Button_Gray(UIArt.button_CAT_CSVIM)
+    Dim B_CAT_CSVEX_dis As Bitmap = Make_Button_Gray(UIArt.button_CAT_CSVEX)
 
-    Dim B_confirm_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_confirm)
-    Dim B_Cancel_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_Cancel)
+    Dim B_confirm_on As Bitmap = Make_Button_brighter(UIArt.button_confirm)
+    Dim B_Cancel_on As Bitmap = Make_Button_brighter(UIArt.button_Cancel)
 
-    Dim B_CAT_on As New Bitmap(My.Resources.Resource1.button_CAT_on)
+    Dim B_CAT_on As New Bitmap(UIArt.button_CAT_on)
     Dim B_CAT_DEL_on As Bitmap = Make_Button_brighter(TwoBmpStack(B_CAT_DEL, B_CAT_on))
     Dim B_CAT_TRA_on As Bitmap = Make_Button_brighter(TwoBmpStack(B_CAT_TRA, B_CAT_on))
     Dim B_CAT_CSVIM_on As Bitmap = Make_Button_brighter(TwoBmpStack(B_CAT_CSVIM, B_CAT_on))

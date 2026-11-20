@@ -251,7 +251,7 @@ Module CommonModule
 
     Public LockFile As IO.StreamWriter
     Public LockFilePath As String
-    Public PwdGrayImage As Bitmap = Make_Button_Gray(My.Resources.Resource1.TOPSEC)
+    Public PwdGrayImage As Bitmap = Make_Button_Gray(UIArt.TOPSEC)
 
     Function CreateLockFile() As Integer
 

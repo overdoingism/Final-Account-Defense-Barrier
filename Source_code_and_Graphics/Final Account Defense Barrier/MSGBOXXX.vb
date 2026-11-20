@@ -5,13 +5,13 @@
 
 Public Class MSGBOXXX
 
-    Dim B_CONF_DI As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_confirm)
+    Dim B_CONF_DI As Bitmap = Make_Button_Gray(UIArt.button_confirm)
 
     Private Sub TextBoxDELETE_TextChanged(sender As Object, e As EventArgs) Handles TextBoxDELETE.TextChanged
 
         If TextBoxDELETE.Text = "DELETE" Then
             ButtonOK.Enabled = True
-            ButtonOK.Image = My.Resources.Resource1.button_confirm
+            ButtonOK.Image = UIArt.button_confirm
         Else
             ButtonOK.Enabled = False
             ButtonOK.Image = B_CONF_DI
@@ -56,10 +56,10 @@ Public Class MSGBOXXX
         Me.DialogResult = DialogResult.Cancel
     End Sub
 
-    Dim B_yes_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_yes)
-    Dim B_no_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_no)
-    Dim B_confirm_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_confirm)
-    Dim B_Cancel_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_Cancel)
+    Dim B_yes_on As Bitmap = Make_Button_brighter(UIArt.button_yes)
+    Dim B_no_on As Bitmap = Make_Button_brighter(UIArt.button_no)
+    Dim B_confirm_on As Bitmap = Make_Button_brighter(UIArt.button_confirm)
+    Dim B_Cancel_on As Bitmap = Make_Button_brighter(UIArt.button_Cancel)
 
     Private Sub Mouse_Enter(sender As Object, e As EventArgs) Handles _
         ButtonOK.MouseEnter, ButtonCancel.MouseEnter, ButtonYes.MouseEnter,
@@ -80,10 +80,10 @@ Public Class MSGBOXXX
 
     End Sub
 
-    Dim B_confirm As New Bitmap(My.Resources.Resource1.button_confirm)
-    Dim B_Cancel As New Bitmap(My.Resources.Resource1.button_Cancel)
-    Dim B_yes As New Bitmap(My.Resources.Resource1.button_yes)
-    Dim B_no As New Bitmap(My.Resources.Resource1.button_no)
+    Dim B_confirm As New Bitmap(UIArt.button_confirm)
+    Dim B_Cancel As New Bitmap(UIArt.button_Cancel)
+    Dim B_yes As New Bitmap(UIArt.button_yes)
+    Dim B_no As New Bitmap(UIArt.button_no)
 
     Private Sub Mouse_Leave(sender As Object, e As EventArgs) Handles _
         ButtonOK.MouseLeave, ButtonCancel.MouseLeave, ButtonYes.MouseLeave,
@@ -116,13 +116,13 @@ End Class
 
 Module MSGBOXXX_Work
 
-    Dim MSGBX_IMG_OK As New Bitmap(Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Message_OK_PNG)))
-    Dim MSGBX_IMG_VRF As New Bitmap(Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Message_VRF_PNG)))
-    Dim MSGBX_IMG_CRI As New Bitmap(Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Message_CRI_PNG)))
+    Dim MSGBX_IMG_OK As New Bitmap(UIArt.Message_OK_PNG)
+    Dim MSGBX_IMG_VRF As New Bitmap(UIArt.Message_VRF_PNG)
+    Dim MSGBX_IMG_CRI As New Bitmap(UIArt.Message_CRI_PNG)
 
-    Dim MSGBX_IMG_OK_TXTB As New Bitmap(Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Message_OK_TXTB_PNG)))
-    Dim MSGBX_IMG_VRF_TXTB As New Bitmap(Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Message_VRF_TXTB_PNG)))
-    Dim MSGBX_IMG_CRI_TXTB As New Bitmap(Image.FromStream(New IO.MemoryStream(My.Resources.Resource1.Message_CRI_TXTB_PNG)))
+    Dim MSGBX_IMG_OK_TXTB As New Bitmap(UIArt.Message_OK_TXTB_PNG)
+    Dim MSGBX_IMG_VRF_TXTB As New Bitmap(UIArt.Message_VRF_TXTB_PNG)
+    Dim MSGBX_IMG_CRI_TXTB As New Bitmap(UIArt.Message_CRI_TXTB_PNG)
 
     Public Function MSGBOXNEW(MessageStr As String, BoxType As MsgBoxStyle, BoxTitle As String,
                               ByRef FirerForm As Form, ByRef FFPicBox As PictureBox) As DialogResult
@@ -152,8 +152,8 @@ Module MSGBOXXX_Work
             Case 65535 'DELETE
                 NeoMSGBOX.ButtonOK.Visible = True
                 NeoMSGBOX.ButtonOK.Enabled = False
-                NeoMSGBOX.ButtonOK.Image = Make_Button_Gray(My.Resources.Resource1.button_confirm)
-                NeoMSGBOX.ButtonOK.Location = New Point(142, NeoMSGBOX.ButtonOK.Location.Y)
+                NeoMSGBOX.ButtonOK.Image = Make_Button_Gray(UIArt.button_confirm)
+                NeoMSGBOX.ButtonOK.Location = New Point(UIArt.S(142), NeoMSGBOX.ButtonOK.Location.Y)
                 NeoMSGBOX.ButtonCancel.Visible = True
                 NeoMSGBOX.TextBoxDELETE.Visible = True
                 NeoMSGBOX.PictureBackGround.Image = MSGBX_IMG_VRF

@@ -37,6 +37,14 @@ Public Class FormMain
     Private ReadOnly _speed As New CpuSpeedReader()
     Dim ProblemFix01 As New ProblemFixer()
 
+    Public Sub New()
+        InitializeComponent()
+        ' The window icon is the program's own icon, read from the exe (VisualModule.ProgramIcon) - it is not
+        ' kept a second time in this form's resources. The login window takes its icon from this form.
+        Dim Own As Icon = ProgramIcon()
+        If Own IsNot Nothing Then Me.Icon = Own
+    End Sub
+
     Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Dim LoadLangFile As String = ""
@@ -45,9 +53,11 @@ Public Class FormMain
         Dim t1 As New Threading.Thread(Sub() Load_Bitmap_For_Threads(0)) 'FormLogin
         Dim t2 As New Threading.Thread(Sub() Load_Bitmap_For_Threads(5)) 'PassKDF
         Dim t3 As New Threading.Thread(Sub() Load_Bitmap_For_Threads(6)) 'FormMain
+        Dim t0 As New Threading.Thread(Sub() Load_Bitmap_For_Threads(7)) 'File explorer (needed by the login window)
         t1.Start()
         t2.Start()
         t3.Start()
+        t0.Start()
 
         '===================== Arguments
         Sys_Chk.Use_Secure_Desktop = True
@@ -256,7 +266,7 @@ Public Class FormMain
             TextBoxRegMailPhone.ReadOnly = True
             TextBoxNote1.ReadOnly = True
             TextBoxNote2Hid.ReadOnly = True
-            PIC_READONLY.Image = New Bitmap(My.Resources.Resource1.Read_Only_Img)
+            PIC_READONLY.Image = New Bitmap(UIArt.Read_Only_Img)
             PIC_READONLY.Visible = True
         End If
         '===========================================
@@ -1179,7 +1189,7 @@ Public Class FormMain
                         CSVW.FormT = Me.Top
                         CSVW.FormL = Me.Left
                         CSVW.Opacity = Me.Opacity
-                        CSVW.PictureMode.Image = My.Resources.Resource1.CSV_EXP
+                        CSVW.PictureMode.Image = UIArt.CSV_EXP
                         CSVW.Show()
 
                         MakeWindowsMono(Me, PictureGray)
@@ -1644,12 +1654,12 @@ Public Class FormMain
 
     '============================== Auto CountDown Close ===========
 
-    Public DIGI_NUM() As Bitmap = {My.Resources.Resource1.DIGI_Y_0, My.Resources.Resource1.DIGI_Y_1,
-    My.Resources.Resource1.DIGI_Y_2, My.Resources.Resource1.DIGI_Y_3, My.Resources.Resource1.DIGI_Y_4,
-    My.Resources.Resource1.DIGI_Y_5, My.Resources.Resource1.DIGI_Y_6, My.Resources.Resource1.DIGI_Y_7,
-    My.Resources.Resource1.DIGI_Y_8, My.Resources.Resource1.DIGI_Y_9}
+    Public DIGI_NUM() As Bitmap = {UIArt.DIGI_Y_0, UIArt.DIGI_Y_1,
+    UIArt.DIGI_Y_2, UIArt.DIGI_Y_3, UIArt.DIGI_Y_4,
+    UIArt.DIGI_Y_5, UIArt.DIGI_Y_6, UIArt.DIGI_Y_7,
+    UIArt.DIGI_Y_8, UIArt.DIGI_Y_9}
 
-    Public DIGI_NUM_N As New Bitmap(My.Resources.Resource1.DIGI_Y__)
+    Public DIGI_NUM_N As New Bitmap(UIArt.DIGI_Y__)
     Public WithEvents AutoCloseTimer As New Windows.Forms.Timer
 
     Private Sub AutoCountDownClose(CountdownSec As Integer) 'Set Auto CountDown Close Timer
@@ -2218,7 +2228,7 @@ Public Class FormMain
 
     Private Sub PictureBoxPwdVi_MouseUp(sender As Object, e As MouseEventArgs) Handles PictureBoxPwdVi.MouseUp
         If Not Sys_Chk._ReadOnlyMode Then
-            ButtonPwd.Image = My.Resources.Resource1.TOPSEC
+            ButtonPwd.Image = UIArt.TOPSEC
         Else
             ButtonPwd.Image = PwdGrayImage
         End If
@@ -2227,7 +2237,7 @@ Public Class FormMain
 
     Private Sub PictureBoxPwdVi_MouseLeave(sender As Object, e As EventArgs) Handles PictureBoxPwdVi.MouseLeave
         If Not Sys_Chk._ReadOnlyMode Then
-            ButtonPwd.Image = My.Resources.Resource1.TOPSEC
+            ButtonPwd.Image = UIArt.TOPSEC
         Else
             ButtonPwd.Image = PwdGrayImage
         End If
@@ -2476,7 +2486,10 @@ Public Class FormMain
         LSCB_UPDW.Enabled = False
         LSCB_MSC.Interval = 100
         LSCB_MSC.Enabled = False
-        LB_Ration = ListBoxAccounts.ClientRectangle.Height / ListBoxAccounts.ItemHeight
+        ' Whole rows only: the list scrolls until its last row is fully visible, so the furthest it can go is
+        ' "rows - whole rows that fit". At 100% the list is exactly 14 rows high; at other scales it is not,
+        ' and counting the part row let the bar run past the end of its track.
+        LB_Ration = Math.Floor(ListBoxAccounts.ClientRectangle.Height / ListBoxAccounts.ItemHeight)
     End Sub
 
     Private Sub LSCBU_MouseDown(sender As Object, e As MouseEventArgs) Handles _
@@ -2543,7 +2556,7 @@ Public Class FormMain
         If LB_Range_Scale > 0 Then
             Dim TmpDbl As Double = CDbl(ListBoxAccounts.TopIndex) / LB_Range_Scale
             TmpDbl *= CDbl(DwY - UpY)
-            LSCBBAR.Top = CInt(TmpDbl + UpY)
+            LSCBBAR.Top = Math.Max(UpY, Math.Min(DwY, CInt(TmpDbl + UpY)))
         Else
             LSCBBAR.Top = UpY
         End If
@@ -2633,44 +2646,44 @@ Public Class FormMain
 
     '====================== Button Visual works =========================
 
-    Dim b_Logout As New Bitmap(My.Resources.Resource1.button_LOGOUT)
-    Dim b_Final As New Bitmap(My.Resources.Resource1.button_Final)
-    Dim b_HELP As New Bitmap(My.Resources.Resource1.button_HELP)
-    Dim b_Launch As New Bitmap(My.Resources.Resource1.button_Launch)
-    Dim b_COPY As New Bitmap(My.Resources.Resource1.button_COPY)
-    Dim b_view_small As New Bitmap(My.Resources.Resource1.button_view_small)
-    Dim b_copy_small As New Bitmap(My.Resources.Resource1.button_copy_small)
-    Dim b_view As New Bitmap(My.Resources.Resource1.button_view)
-    Dim b_HKO_on As New Bitmap(My.Resources.Resource1.button_HKO_small_on)
-    Dim b_HKO_off As New Bitmap(My.Resources.Resource1.button_HKO_small_off)
-    Dim b_PictureBoxCATMAN As New Bitmap(My.Resources.Resource1.button_CATMAN)
-    Dim b_security_check As New Bitmap(My.Resources.Resource1.button_security_check)
+    Dim b_Logout As New Bitmap(UIArt.button_LOGOUT)
+    Dim b_Final As New Bitmap(UIArt.button_Final)
+    Dim b_HELP As New Bitmap(UIArt.button_HELP)
+    Dim b_Launch As New Bitmap(UIArt.button_Launch)
+    Dim b_COPY As New Bitmap(UIArt.button_COPY)
+    Dim b_view_small As New Bitmap(UIArt.button_view_small)
+    Dim b_copy_small As New Bitmap(UIArt.button_copy_small)
+    Dim b_view As New Bitmap(UIArt.button_view)
+    Dim b_HKO_on As New Bitmap(UIArt.button_HKO_small_on)
+    Dim b_HKO_off As New Bitmap(UIArt.button_HKO_small_off)
+    Dim b_PictureBoxCATMAN As New Bitmap(UIArt.button_CATMAN)
+    Dim b_security_check As New Bitmap(UIArt.button_security_check)
 
-    Dim b_Logout_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_LOGOUT)
-    Dim b_Final_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_Final)
-    Dim b_HELP_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_HELP)
-    Dim b_Launch_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_Launch)
-    Dim b_COPY_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_COPY)
-    Dim b_copy_small_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_copy_small)
-    Dim b_security_check_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_security_check)
+    Dim b_Logout_on As Bitmap = Make_Button_brighter(UIArt.button_LOGOUT)
+    Dim b_Final_on As Bitmap = Make_Button_brighter(UIArt.button_Final)
+    Dim b_HELP_on As Bitmap = Make_Button_brighter(UIArt.button_HELP)
+    Dim b_Launch_on As Bitmap = Make_Button_brighter(UIArt.button_Launch)
+    Dim b_COPY_on As Bitmap = Make_Button_brighter(UIArt.button_COPY)
+    Dim b_copy_small_on As Bitmap = Make_Button_brighter(UIArt.button_copy_small)
+    Dim b_security_check_on As Bitmap = Make_Button_brighter(UIArt.button_security_check)
 
-    Dim b_view_small_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_view_small)
-    Dim b_view_small_Son As Bitmap = Make_Button_HueChange(My.Resources.Resource1.button_view_small, 315) 'Not actully use
+    Dim b_view_small_on As Bitmap = Make_Button_brighter(UIArt.button_view_small)
+    Dim b_view_small_Son As Bitmap = Make_Button_HueChange(UIArt.button_view_small, 315) 'Not actully use
     Dim b_view_small_Son_on As Bitmap = Make_Button_brighter(b_view_small_Son, 1.1)
 
-    Dim b_view_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_view)
-    Dim b_view_Son As Bitmap = Make_Button_HueChange(My.Resources.Resource1.button_view, 315)
+    Dim b_view_on As Bitmap = Make_Button_brighter(UIArt.button_view)
+    Dim b_view_Son As Bitmap = Make_Button_HueChange(UIArt.button_view, 315)
     Dim b_view_Son_on As Bitmap = Make_Button_brighter(b_view_Son, 1.1)
 
-    Dim b_HKO_Soff_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_HKO_small_off, 1.1)
-    Dim b_HKO_Son_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_HKO_small_on, 1.1)
+    Dim b_HKO_Soff_on As Bitmap = Make_Button_brighter(UIArt.button_HKO_small_off, 1.1)
+    Dim b_HKO_Son_on As Bitmap = Make_Button_brighter(UIArt.button_HKO_small_on, 1.1)
 
     Dim b_PictureBoxCATMAN_on As Bitmap = Make_Button_brighter(Make_Button_HueChange(b_PictureBoxCATMAN, 15), 1.1)
 
-    Dim BTN_Win_Min As New Bitmap(My.Resources.Resource1.WinMin)
+    Dim BTN_Win_Min As New Bitmap(UIArt.WinMin)
     Dim BTN_Win_Min_on As Bitmap = Make_Button_brighter(BTN_Win_Min)
 
-    Dim BTN_Pwd As New Bitmap(My.Resources.Resource1.TOPSEC)
+    Dim BTN_Pwd As New Bitmap(UIArt.TOPSEC)
     Dim BTN_Pwd_on As Bitmap = Make_Button_brighter(BTN_Pwd)
 
     Private Sub Mouse_Enter(sender As Object, e As EventArgs) Handles _
@@ -2767,26 +2780,26 @@ Public Class FormMain
 
     End Sub
 
-    Dim LBTN_Save_En As New Bitmap(My.Resources.Resource1.button_L_save)
-    Dim LBTN_Del_En As New Bitmap(My.Resources.Resource1.button_L_delete)
-    Dim LBTN_MoveU_En As New Bitmap(My.Resources.Resource1.button_L_moveUP)
-    Dim LBTN_MoveD_En As New Bitmap(My.Resources.Resource1.button_L_moveDWN)
-    Dim LBTN_TKey_En As New Bitmap(My.Resources.Resource1.button_L_transKEY)
-    Dim LBTN_FInfo_En As New Bitmap(My.Resources.Resource1.button_L_fileInfo)
+    Dim LBTN_Save_En As New Bitmap(UIArt.button_L_save)
+    Dim LBTN_Del_En As New Bitmap(UIArt.button_L_delete)
+    Dim LBTN_MoveU_En As New Bitmap(UIArt.button_L_moveUP)
+    Dim LBTN_MoveD_En As New Bitmap(UIArt.button_L_moveDWN)
+    Dim LBTN_TKey_En As New Bitmap(UIArt.button_L_transKEY)
+    Dim LBTN_FInfo_En As New Bitmap(UIArt.button_L_fileInfo)
 
-    Dim LBTN_Save_Di As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_L_save)
-    Dim LBTN_Del_Di As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_L_delete)
-    Dim LBTN_MoveU_Di As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_L_moveUP)
-    Dim LBTN_MoveD_Di As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_L_moveDWN)
-    Dim LBTN_TKey_Di As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_L_transKEY)
-    Dim LBTN_FInfo_Di As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_L_fileInfo)
+    Dim LBTN_Save_Di As Bitmap = Make_Button_Gray(UIArt.button_L_save)
+    Dim LBTN_Del_Di As Bitmap = Make_Button_Gray(UIArt.button_L_delete)
+    Dim LBTN_MoveU_Di As Bitmap = Make_Button_Gray(UIArt.button_L_moveUP)
+    Dim LBTN_MoveD_Di As Bitmap = Make_Button_Gray(UIArt.button_L_moveDWN)
+    Dim LBTN_TKey_Di As Bitmap = Make_Button_Gray(UIArt.button_L_transKEY)
+    Dim LBTN_FInfo_Di As Bitmap = Make_Button_Gray(UIArt.button_L_fileInfo)
 
-    Dim LBTN_Save_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_L_save, 1.2)
-    Dim LBTN_delete_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_L_delete, 1.2)
-    Dim LBTN_moveUP_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_L_moveUP, 1.2)
-    Dim LBTN_moveDWN_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_L_moveDWN, 1.2)
-    Dim LBTN_transKEY_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_L_transKEY, 1.2)
-    Dim LBTN_fileInfo_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_L_fileInfo, 1.2)
+    Dim LBTN_Save_on As Bitmap = Make_Button_brighter(UIArt.button_L_save, 1.2)
+    Dim LBTN_delete_on As Bitmap = Make_Button_brighter(UIArt.button_L_delete, 1.2)
+    Dim LBTN_moveUP_on As Bitmap = Make_Button_brighter(UIArt.button_L_moveUP, 1.2)
+    Dim LBTN_moveDWN_on As Bitmap = Make_Button_brighter(UIArt.button_L_moveDWN, 1.2)
+    Dim LBTN_transKEY_on As Bitmap = Make_Button_brighter(UIArt.button_L_transKEY, 1.2)
+    Dim LBTN_fileInfo_on As Bitmap = Make_Button_brighter(UIArt.button_L_fileInfo, 1.2)
 
     Private Sub L_Mouse_Enter(sender As Object, e As EventArgs) Handles _
         ButtonSave.MouseEnter, ButtonDelete.MouseEnter, ButtonGoUP.MouseEnter, ButtonGoDown.MouseEnter,

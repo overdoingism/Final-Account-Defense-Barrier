@@ -393,13 +393,13 @@
 
         Select Case TheCode
             Case 0
-                Return My.Resources.Resource1.Lang_en
+                Return UIArt.Lang_en
             Case 1
-                Return My.Resources.Resource1.Lang_jp
+                Return UIArt.Lang_jp
             Case 2
-                Return My.Resources.Resource1.Lang_zhtw
+                Return UIArt.Lang_zhtw
             Case 3
-                Return My.Resources.Resource1.Lang_zhcn
+                Return UIArt.Lang_zhcn
         End Select
 
         Return Nothing

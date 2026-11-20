@@ -194,6 +194,12 @@
     </Compile>
     <Compile Include="SmallSecurityWorks.vb" />
     <Compile Include="VisualModule.vb" />
+    <Compile Include="UIArt.vb" />
+    <Compile Include="UIArtNames.vb" />
+    <Compile Include="UIArtPainters.vb" />
+    <Compile Include="UIArtGlow.vb" />
+    <Compile Include="UIArtText.vb" />
+    <Compile Include="My Project\ApplicationEvents.vb" />
     <Compile Include="WhyMSDoesNotDoHisJob.vb" />
     <Compile Include="MSGBOXXX.Designer.vb">
       <DependentUpon>MSGBOXXX.vb</DependentUpon>
@@ -299,15 +305,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AllResource\Load as Bin\Doc01P_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Doc02P_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Doc03P_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Message_CRI_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Message_CRI_TXTB_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Message_OK_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Message_OK_TXTB_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Message_VRF_PNG.Bin" />
-    <None Include="AllResource\Load as Bin\Message_VRF_TXTB_PNG.Bin" />
     <None Include="AllResource\Load as Bin\TXTFile.zip" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
@@ -323,70 +320,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AllResource\PASSWORD SHOW.png" />
-    <None Include="AllResource\PASSWORD HIDE.png" />
-    <None Include="AllResource\caps_lock_off.png" />
-    <None Include="AllResource\caps_lock_on.png" />
-    <None Include="AllResource\button_Cancel.png" />
-    <None Include="AllResource\button_Final.png" />
-    <None Include="AllResource\button_view.png" />
-    <None Include="AllResource\TOPSEC.png" />
-    <None Include="AllResource\button_copy_small.png" />
-    <None Include="AllResource\button_view_small.png" />
-    <None Include="AllResource\button_L_delete.png" />
-    <None Include="AllResource\button_L_fileInfo.png" />
-    <None Include="AllResource\button_L_moveDWN.png" />
-    <None Include="AllResource\button_L_moveUP.png" />
-    <None Include="AllResource\button_L_save.png" />
-    <None Include="AllResource\button_L_transKEY.png" />
-    <None Include="AllResource\button_CATMAN.png" />
-    <None Include="AllResource\EPTSLOT_313.png" />
-    <None Include="AllResource\EPTSLOT_692.png" />
-    <None Include="AllResource\button_Launch.png" />
-    <None Include="AllResource\button_COPY.png" />
-    <None Include="AllResource\button_HELP.png" />
-    <None Include="AllResource\button_LOGOUT.png" />
-    <None Include="AllResource\DIGI_Y_-.png" />
-    <None Include="AllResource\DIGI_Y_0.png" />
-    <None Include="AllResource\DIGI_Y_1.png" />
-    <None Include="AllResource\DIGI_Y_2.png" />
-    <None Include="AllResource\DIGI_Y_3.png" />
-    <None Include="AllResource\DIGI_Y_4.png" />
-    <None Include="AllResource\DIGI_Y_5.png" />
-    <None Include="AllResource\DIGI_Y_6.png" />
-    <None Include="AllResource\DIGI_Y_7.png" />
-    <None Include="AllResource\DIGI_Y_8.png" />
-    <None Include="AllResource\DIGI_Y_9.png" />
-    <None Include="AllResource\TimerID_ACT.png" />
-    <None Include="AllResource\TimerID_INACT.png" />
-    <None Include="AllResource\button_confirm.png" />
-    <None Include="AllResource\button_CAT_DEL.png" />
-    <None Include="AllResource\button_CAT_TRANS.png" />
-    <None Include="AllResource\button_genpwd.png" />
-    <None Include="AllResource\mit_Btn.png" />
-    <None Include="AllResource\button_OpenF.png" />
-    <None Include="AllResource\mit_lic.png" />
-    <None Include="AllResource\WinMin.png" />
-    <None Include="AllResource\SALT_ADD.png" />
-    <None Include="AllResource\button_no.png" />
-    <None Include="AllResource\button_yes.png" />
-    <None Include="AllResource\SCB_BAR.png" />
-    <None Include="AllResource\SCB_S_DW.png" />
-    <None Include="AllResource\SCB_S_UP.png" />
-    <None Include="AllResource\SCB_BARV.png" />
-    <None Include="AllResource\Arr_Left.png" />
-    <None Include="AllResource\exit_Pic.png" />
-    <None Include="AllResource\button_CAT_CSVIM.png" />
-    <None Include="AllResource\button_CAT_CSVEX.png" />
-    <None Include="AllResource\CSV_IMP.png" />
-    <None Include="AllResource\CSV_EXP.png" />
-    <None Include="AllResource\PWD_KDF_LINE.png" />
-    <None Include="AllResource\PWD_KDF_R.png" />
-    <None Include="AllResource\PWD_KDF_C.png" />
-    <None Include="AllResource\PWD_KDF_PASS.png" />
-    <None Include="AllResource\CSV_Waiting.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.6.1 %28x86 與 x64%29</ProductName>
@@ -399,37 +332,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AllResource\button_HKM_Title.png" />
-    <None Include="AllResource\button_HKO_small_off.png" />
-    <None Include="AllResource\button_HKO_small_on.png" />
-    <None Include="AllResource\Read_Only_Img.png" />
-    <None Include="AllResource\PFWS_OFF.png" />
-    <None Include="AllResource\PFWS_ON.png" />
-    <None Include="AllResource\PFWS_RA.png" />
-    <None Include="AllResource\button_security_check.png" />
-    <None Include="AllResource\Title_LOGIN.png" />
-    <None Include="AllResource\Title_NORMAL.png" />
-    <None Include="AllResource\Title_Password.png" />
-    <None Include="AllResource\Form_Config.png" />
-    <None Include="AllResource\PWD_KDF.png" />
-    <None Include="AllResource\Form_Main.png" />
-    <None Include="AllResource\Timer.png" />
-    <None Include="AllResource\Lang-arr.png" />
-    <None Include="AllResource\Lang-en.png" />
-    <None Include="AllResource\Lang-jp.png" />
-    <None Include="AllResource\Lang-load.png" />
-    <None Include="AllResource\Lang-zhtw.png" />
-    <None Include="AllResource\Lang-zhcn.png" />
-    <None Include="AllResource\File_expo_New.png" />
-    <None Include="AllResource\NextClick.png" />
-    <None Include="AllResource\PWD_Gen.png" />
-    <None Include="AllResource\KDFT_Types.png" />
-    <None Include="AllResource\KDFS-Types.png" />
-    <None Include="AllResource\button_CAT_on.png" />
-    <None Include="AllResource\CBOX_AR.png" />
-    <Content Include="AllResource\WARN_1.png" />
-    <Content Include="AllResource\WARN_2.png" />
     <Content Include="fadb4.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- UI picture layers (text and other parts not drawn by UIArtPainters.vb). Generated by the art tool (not part of this repository) -->
+    <EmbeddedResource Include="AllResource\Layers\*.png">
+      <LogicalName>UIArtLayer.%(Filename).png</LogicalName>
+    </EmbeddedResource>
+    <!-- Lettering: Zen Antique outlines and the list of text runs. Generated by the art tool (not part of this repository) -->
+    <EmbeddedResource Include="AllResource\UIArtGlyphs.bin">
+      <LogicalName>UIArtGlyphs.bin</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AllResource\UIArtText.txt">
+      <LogicalName>UIArtText.txt</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

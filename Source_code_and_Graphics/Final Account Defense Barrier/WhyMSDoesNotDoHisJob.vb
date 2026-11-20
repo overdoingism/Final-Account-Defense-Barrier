@@ -1845,23 +1845,40 @@ End Module
 Public NotInheritable Class CpuSpeedReader
     Implements IDisposable
 
-    Private ReadOnly _pc As PerformanceCounter
+    ' Opening a performance counter is slow: about 0.6 s when Windows has it cached, several seconds
+    ' when it has not (first start after boot, or after a while). It used to be opened while the main
+    ' form was being created and so delayed the login window by that much. Now it is opened on a
+    ' background thread; until it is there, ReadMhz reports 0 ("not available"), as it already may.
+    Private _pc As PerformanceCounter
     Private ReadOnly _nominalMhz As Integer
 
     Public Sub New()
-        _pc = New PerformanceCounter("Processor Information", "% Processor Performance", "_Total", True)
-        _pc.NextValue()      ' 第一次一定回 0，先讀掉
         _nominalMhz = ReadNominalMhz()
+        Dim Opener As New Threading.Thread(
+            Sub()
+                Try
+                    Dim Pc As New PerformanceCounter("Processor Information", "% Processor Performance", "_Total", True)
+                    Pc.NextValue()      ' 第一次一定回 0，先讀掉
+                    _pc = Pc
+                Catch ex As Exception
+                    'no counter: ReadMhz keeps returning 0
+                End Try
+            End Sub)
+        Opener.IsBackground = True
+        Opener.Start()
     End Sub
 
     ''' <summary>重設取樣起點。</summary>
     Public Sub Mark()
-        _pc.NextValue()
+        Dim Pc As PerformanceCounter = _pc
+        If Pc IsNot Nothing Then Pc.NextValue()
     End Sub
 
     ''' <summary>從上次 Mark/ReadMhz 到現在的平均實際時脈 (MHz)。讀不到回傳 0。</summary>
     Public Function ReadMhz() As Integer
-        Dim pct As Single = _pc.NextValue()
+        Dim Pc As PerformanceCounter = _pc
+        If Pc Is Nothing Then Return 0
+        Dim pct As Single = Pc.NextValue()
         If pct <= 0 OrElse _nominalMhz <= 0 Then Return 0
         Return CInt(_nominalMhz * pct / 100.0)
     End Function
@@ -1874,7 +1891,7 @@ Public NotInheritable Class CpuSpeedReader
     End Function
 
     Public Sub Dispose() Implements IDisposable.Dispose
-        _pc.Dispose()
+        If _pc IsNot Nothing Then _pc.Dispose()
     End Sub
 
 End Class

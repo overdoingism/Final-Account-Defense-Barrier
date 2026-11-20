@@ -97,9 +97,9 @@ Public Class FormLogin
                 Load_Bitmap_For_Threads(0)
                 PictureBoxLogin.Image = FormLoginBitmap0
 
-                ButtonCancel.Image = My.Resources.Resource1.button_Final
+                ButtonCancel.Image = UIArt.button_Final
 
-                If This_Time_Salt IsNot Nothing Then PictureSalt.Image = My.Resources.Resource1.SALT_ADD
+                If This_Time_Salt IsNot Nothing Then PictureSalt.Image = UIArt.SALT_ADD
                 PicLang.Visible = True
                 PictureSalt.Visible = True
                 ButtonCancel.Visible = False
@@ -113,8 +113,9 @@ Public Class FormLogin
                     ButtonRightArr.Visible = True
                     PicLang.Image = GetBitmapFromCode(LIdx)
                     PicLang.Visible = True
+                    ButtonRightArr.Left = PicLang.Right
                 Else
-                    PicLangLoad.Top += 28
+                    PicLangLoad.Top += UIArt.S(28)
                     PicLangLoad.Visible = True
                 End If
 
@@ -148,27 +149,27 @@ Public Class FormLogin
                     TextBoxPwd2.TabIndex = 1
                     PicSelect.Visible = False
                     ButtonRightArr2.Visible = False
-                    Me.Height = 334
+                    Me.Height = UIArt.S(334)
                 ElseIf WorkMode = 1 Then
 
-                    Me.Height = 374
-                    PicSelect.Top = 343
-                    ButtonRightArr2.Top = 342
+                    Me.Height = UIArt.S(374)
+                    PicSelect.Top = UIArt.S(343)
+                    ButtonRightArr2.Top = UIArt.S(342)
                     KDF_Mode_ForExp = Sys_Chk_Login._KDF_Type
-                    PicSelect.Image = My.Resources.Resource1.KDFS_Types
+                    PicSelect.Image = UIArt.KDFS_Types
 
                 End If
 
-                ButtonCaps.Top -= 201
-                TextBoxPLocked.Top -= 201
-                ButtonViewPass.Top -= 201
-                TextBoxPwd2.Top -= 201
-                TextBoxPwdVerify2.Top -= 201
-                PictureSalt.Top -= 201
+                ButtonCaps.Top -= UIArt.S(201)
+                TextBoxPLocked.Top -= UIArt.S(201)
+                ButtonViewPass.Top -= UIArt.S(201)
+                TextBoxPwd2.Top -= UIArt.S(201)
+                TextBoxPwdVerify2.Top -= UIArt.S(201)
+                PictureSalt.Top -= UIArt.S(201)
 
-                ButtonOK.Top -= 201
-                ButtonFileOpen.Top -= 201
-                ButtonCancel.Top -= 201
+                ButtonOK.Top -= UIArt.S(201)
+                ButtonFileOpen.Top -= UIArt.S(201)
+                ButtonCancel.Top -= UIArt.S(201)
 
                 If This_Time_Salt IsNot Nothing Then PictureSalt.Visible = True
 
@@ -181,23 +182,23 @@ Public Class FormLogin
                 ButtonFin.Visible = False
 
                 PictureBoxLogin.Image = FormLoginBitmap2
-                Height = 374
-                ButtonCaps.Top -= 201
-                ButtonViewPass.Top -= 201
-                TextBoxPwd2.Top -= 201
-                TextBoxPwdVerify2.Top -= 201
+                Height = UIArt.S(374)
+                ButtonCaps.Top -= UIArt.S(201)
+                ButtonViewPass.Top -= UIArt.S(201)
+                TextBoxPwd2.Top -= UIArt.S(201)
+                TextBoxPwdVerify2.Top -= UIArt.S(201)
 
-                ButtonCancel.Top = 260
-                ButtonCancel.Left = 147
-                ButtonOK.Top -= 201
+                ButtonCancel.Top = UIArt.S(260)
+                ButtonCancel.Left = UIArt.S(147)
+                ButtonOK.Top -= UIArt.S(201)
 
                 ButtonHAGP.Visible = True
                 ButtonHAGP.Image = B_genpwd
-                ButtonHAGP.Top = 260
-                ButtonHAGP.Left = 276
+                ButtonHAGP.Top = UIArt.S(260)
+                ButtonHAGP.Left = UIArt.S(276)
 
-                PicSelect.Top = 343
-                ButtonRightArr2.Top = 342
+                PicSelect.Top = UIArt.S(343)
+                ButtonRightArr2.Top = UIArt.S(342)
 
                 ToolTip1.SetToolTip(TextBoxPwd2, LangStrs(LIdx, UsingTxt.TT_Pw))
                 ToolTip1.SetToolTip(TextBoxPwdVerify2, LangStrs(LIdx, UsingTxt.TT_Pv))
@@ -219,7 +220,7 @@ Public Class FormLogin
 
         End Select
 
-        PicSelect.Image = My.Resources.Resource1.KDFS_Types
+        PicSelect.Image = UIArt.KDFS_Types
 
         If Sys_Chk_Login.Running_Admin Then
             ButtonPFWS.Enabled = True
@@ -229,7 +230,7 @@ Public Class FormLogin
                 ButtonPFWS.Image = B_PFWSon
             End If
         Else
-            ButtonPFWS.Image = The_Shine_Visual_Filter2(My.Resources.Resource1.PFWS_RA)
+            ButtonPFWS.Image = The_Shine_Visual_Filter2(UIArt.PFWS_RA)
         End If
 
         If Sys_Chk_Login.Use_Secure_Desktop = True Then
@@ -289,7 +290,7 @@ Public Class FormLogin
 
             If Not Sys_Chk_Login.IsLinuxWine Then
                 MSGBOXNEW(LangStrs(LIdx, UsingTxt.OT_dbg), MsgBoxStyle.Critical, LangStrs(LIdx, UsingTxt.Ti_Cri), Me, PictureGray)
-                PicWarn.Image = The_Shine_Visual_Filter2(My.Resources.Resource1.WARN_1)
+                PicWarn.Image = The_Shine_Visual_Filter2(UIArt.WARN_1)
                 WARN_Timer.Enabled = True
             End If
 
@@ -300,13 +301,13 @@ Public Class FormLogin
 
             If Not Sys_Chk_Login.IsLinuxWine Then
                 MSGBOXNEW(LangStrs(LIdx, UsingTxt.OT_bwf), MsgBoxStyle.Critical, LangStrs(LIdx, UsingTxt.Ti_Cri), Me, PictureGray)
-                PicWarn.Image = The_Shine_Visual_Filter2(My.Resources.Resource1.WARN_1)
+                PicWarn.Image = The_Shine_Visual_Filter2(UIArt.WARN_1)
                 WARN_Timer.Enabled = True
             End If
         End If
 
         If Sys_Chk_Login.IsLinuxWine Then
-            PicWarn.Image = The_Shine_Visual_Filter2(My.Resources.Resource1.WARN_2)
+            PicWarn.Image = The_Shine_Visual_Filter2(UIArt.WARN_2)
             If WorkMode = 0 Then WARN_Timer.Enabled = True
             Debug_Tester.Enabled = False
         End If
@@ -394,7 +395,7 @@ Public Class FormLogin
                 t1.Start()
                 t2.Start()
                 FKDF.KDF_Type = KDF_Type
-                FKDF.PicKDF_TYPE.Image = My.Resources.Resource1.KDFT_Types
+                FKDF.PicKDF_TYPE.Image = UIArt.KDFT_Types
                 FKDF.ShowDialog(Me)
                 t1.Join()
                 t2.Join()
@@ -423,7 +424,7 @@ Public Class FormLogin
                 t1.Start()
                 t2.Start()
                 FKDF.KDF_Type = KDF_Type
-                FKDF.PicKDF_TYPE.Image = My.Resources.Resource1.KDFT_Types
+                FKDF.PicKDF_TYPE.Image = UIArt.KDFT_Types
                 FKDF.ShowDialog(Me)
                 t1.Join()
                 t2.Join()
@@ -615,19 +616,19 @@ Public Class FormLogin
 
             GP_Use_Symbol += 1
             If GP_Use_Symbol >= 4 Then GP_Use_Symbol = 1
-            PicSelect.Image = My.Resources.Resource1.PWD_Gen
+            PicSelect.Image = UIArt.PWD_Gen
 
         ElseIf WorkMode = 1 Then
 
             KDF_Mode_ForExp += 1
             If KDF_Mode_ForExp >= 4 Then KDF_Mode_ForExp = 1
-            PicSelect.Image = My.Resources.Resource1.KDFS_Types
+            PicSelect.Image = UIArt.KDFS_Types
 
         ElseIf WorkMode = 0 Then
 
             Sys_Chk._KDF_Type += 1
             If Sys_Chk._KDF_Type >= 4 Then Sys_Chk._KDF_Type = 1
-            PicSelect.Image = My.Resources.Resource1.KDFS_Types
+            PicSelect.Image = UIArt.KDFS_Types
 
         End If
 
@@ -712,13 +713,13 @@ Public Class FormLogin
 
     End Sub
 
-    Dim B_PWDSHOWon As New Bitmap(My.Resources.Resource1.PASSWORD_SHOW)
-    Dim B_PWDSHOWoff As New Bitmap(My.Resources.Resource1.PASSWORD_HIDE)
+    Dim B_PWDSHOWon As New Bitmap(UIArt.PASSWORD_SHOW)
+    Dim B_PWDSHOWoff As New Bitmap(UIArt.PASSWORD_HIDE)
     Dim B_PWDSHOWon_on As Bitmap = Make_Button_brighter(B_PWDSHOWon)
     Dim B_PWDSHOWoff_on As Bitmap = Make_Button_brighter(B_PWDSHOWoff)
 
-    Dim B_LangR As Bitmap = My.Resources.Resource1.Lang_arr
-    Dim B_LangR_on As New Bitmap(MakeRedArrow(B_LangR))
+    Dim B_LangR As Bitmap = UIArt.Lang_arr
+    Dim B_LangR_on As Bitmap = UIArt.Lang_arr_on
 
     Private Sub ButtonViewPass_Click(sender As Object, e As EventArgs) Handles ButtonViewPass.Click
 
@@ -793,8 +794,8 @@ Public Class FormLogin
 
     '================= AT Filed (Protect From Windows Startup (PFWS))
 
-    Dim B_PFWSon As Bitmap = The_Shine_Visual_Filter2(My.Resources.Resource1.PFWS_ON)
-    Dim B_PFWSoff As Bitmap = The_Shine_Visual_Filter2(My.Resources.Resource1.PFWS_OFF)
+    Dim B_PFWSon As Bitmap = The_Shine_Visual_Filter2(UIArt.PFWS_ON)
+    Dim B_PFWSoff As Bitmap = The_Shine_Visual_Filter2(UIArt.PFWS_OFF)
     Dim B_PFWSon_on As Bitmap = Make_Button_brighter(B_PFWSon)
     Dim B_PFWSoff_on As Bitmap = Make_Button_brighter(B_PFWSoff)
 
@@ -865,7 +866,9 @@ Public Class FormLogin
     Private Sub TextBoxPwd2_TextChanged(sender As Object, e As EventArgs)
 
         If Not ClearWorking Then
-            sender.forecolor = SSWorker.EvaPwdStrong(sender)
+            ' The rating stays with this window (Sys_Chk_Login is its own copy of the check list);
+            ' LogInFormWork takes it over as the login key strength only after a successful login.
+            sender.forecolor = SSWorker.EvaPwdStrong(sender, Sys_Chk_Login._LoginKeyStrength)
             If TextBoxPwd2.Text.Length > 0 Then
                 EnDisConfirmBtn(True)
             Else
@@ -891,8 +894,8 @@ Public Class FormLogin
 
     Private MouseOnIt As Boolean
 
-    Private B_CAPon As New Bitmap(My.Resources.Resource1.caps_lock_on)
-    Private B_CAPoff As New Bitmap(My.Resources.Resource1.caps_lock_off)
+    Private B_CAPon As New Bitmap(UIArt.caps_lock_on)
+    Private B_CAPoff As New Bitmap(UIArt.caps_lock_off)
     Private B_CAPon_on As Bitmap = Make_Button_brighter(B_CAPon)
     Private B_CAPoff_on As Bitmap = Make_Button_brighter(B_CAPoff)
 
@@ -956,23 +959,23 @@ Public Class FormLogin
 
     '================= Button visual work
 
-    Dim B_confirm_Dis As Bitmap = Make_Button_Gray(My.Resources.Resource1.button_confirm)
+    Dim B_confirm_Dis As Bitmap = Make_Button_Gray(UIArt.button_confirm)
 
-    Dim B_Logout_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_LOGOUT)
-    Dim B_Final_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_Final)
-    Dim B_HELP_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_HELP)
-    Dim B_confirm_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_confirm)
-    Dim B_OpenF_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_OpenF)
-    Dim B_Cancel_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_Cancel)
-    Dim B_genpwd_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.button_genpwd)
+    Dim B_Logout_on As Bitmap = Make_Button_brighter(UIArt.button_LOGOUT)
+    Dim B_Final_on As Bitmap = Make_Button_brighter(UIArt.button_Final)
+    Dim B_HELP_on As Bitmap = Make_Button_brighter(UIArt.button_HELP)
+    Dim B_confirm_on As Bitmap = Make_Button_brighter(UIArt.button_confirm)
+    Dim B_OpenF_on As Bitmap = Make_Button_brighter(UIArt.button_OpenF)
+    Dim B_Cancel_on As Bitmap = Make_Button_brighter(UIArt.button_Cancel)
+    Dim B_genpwd_on As Bitmap = Make_Button_brighter(UIArt.button_genpwd)
 
-    Dim B_NextClick As New Bitmap(My.Resources.Resource1.NextClick)
-    Dim B_NextClick_on As Bitmap = Make_Button_brighter(My.Resources.Resource1.NextClick)
+    Dim B_NextClick As New Bitmap(UIArt.NextClick)
+    Dim B_NextClick_on As Bitmap = Make_Button_brighter(UIArt.NextClick)
 
-    Dim B_Win_Min As New Bitmap(My.Resources.Resource1.WinMin)
+    Dim B_Win_Min As New Bitmap(UIArt.WinMin)
     Dim B_Win_Min_on As Bitmap = Make_Button_brighter(B_Win_Min)
 
-    Dim B_MIT As New Bitmap(My.Resources.Resource1.mit_Btn)
+    Dim B_MIT As New Bitmap(UIArt.mit_Btn)
     Dim B_MIT_on As Bitmap = Make_Button_brighter(B_MIT)
 
 
@@ -1023,12 +1026,12 @@ Public Class FormLogin
 
     End Sub
 
-    Dim B_confirm As New Bitmap(My.Resources.Resource1.button_confirm)
-    Dim B_OpenF As New Bitmap(My.Resources.Resource1.button_OpenF)
-    Dim B_Final As New Bitmap(My.Resources.Resource1.button_Final)
-    Dim B_Cancel As New Bitmap(My.Resources.Resource1.button_Cancel)
-    Dim B_HELP As New Bitmap(My.Resources.Resource1.button_HELP)
-    Dim B_genpwd As New Bitmap(My.Resources.Resource1.button_genpwd)
+    Dim B_confirm As New Bitmap(UIArt.button_confirm)
+    Dim B_OpenF As New Bitmap(UIArt.button_OpenF)
+    Dim B_Final As New Bitmap(UIArt.button_Final)
+    Dim B_Cancel As New Bitmap(UIArt.button_Cancel)
+    Dim B_HELP As New Bitmap(UIArt.button_HELP)
+    Dim B_genpwd As New Bitmap(UIArt.button_genpwd)
 
     Private Sub Mouse_Leave(sender As Object, e As EventArgs) Handles _
         ButtonOK.MouseLeave, ButtonFileOpen.MouseLeave, ButtonFin.MouseLeave, ButtonCancel.MouseLeave,
@@ -1092,29 +1095,29 @@ Public Class FormLogin
         If WorkMode = 2 Then
             Select Case GP_Use_Symbol
                 Case 1
-                    e.Graphics.DrawImage(My.Resources.Resource1.PWD_Gen, 0, 0)
+                    UIArt.DrawSpriteRow(e.Graphics, "PWD_Gen", 0, 3, PicSelect.ClientRectangle)
                 Case 2
-                    e.Graphics.DrawImage(My.Resources.Resource1.PWD_Gen, 0, -22)
+                    UIArt.DrawSpriteRow(e.Graphics, "PWD_Gen", 1, 3, PicSelect.ClientRectangle)
                 Case 3
-                    e.Graphics.DrawImage(My.Resources.Resource1.PWD_Gen, 0, -44)
+                    UIArt.DrawSpriteRow(e.Graphics, "PWD_Gen", 2, 3, PicSelect.ClientRectangle)
             End Select
         ElseIf WorkMode = 1 Then
             Select Case KDF_Mode_ForExp
                 Case 1
-                    e.Graphics.DrawImage(My.Resources.Resource1.KDFS_Types, 0, 0)
+                    UIArt.DrawSpriteRow(e.Graphics, "KDFS_Types", 0, 3, PicSelect.ClientRectangle)
                 Case 2
-                    e.Graphics.DrawImage(My.Resources.Resource1.KDFS_Types, 0, -22)
+                    UIArt.DrawSpriteRow(e.Graphics, "KDFS_Types", 1, 3, PicSelect.ClientRectangle)
                 Case 3
-                    e.Graphics.DrawImage(My.Resources.Resource1.KDFS_Types, 0, -44)
+                    UIArt.DrawSpriteRow(e.Graphics, "KDFS_Types", 2, 3, PicSelect.ClientRectangle)
             End Select
         ElseIf WorkMode = 0 Then
             Select Case Sys_Chk._KDF_Type
                 Case 1
-                    e.Graphics.DrawImage(My.Resources.Resource1.KDFS_Types, 0, 0)
+                    UIArt.DrawSpriteRow(e.Graphics, "KDFS_Types", 0, 3, PicSelect.ClientRectangle)
                 Case 2
-                    e.Graphics.DrawImage(My.Resources.Resource1.KDFS_Types, 0, -22)
+                    UIArt.DrawSpriteRow(e.Graphics, "KDFS_Types", 1, 3, PicSelect.ClientRectangle)
                 Case 3
-                    e.Graphics.DrawImage(My.Resources.Resource1.KDFS_Types, 0, -44)
+                    UIArt.DrawSpriteRow(e.Graphics, "KDFS_Types", 2, 3, PicSelect.ClientRectangle)
             End Select
         End If
 

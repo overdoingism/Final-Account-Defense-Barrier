@@ -68,7 +68,7 @@ Partial Class MSGBOXXX
         '
         Me.ButtonOK.BackColor = System.Drawing.Color.Black
         Me.ButtonOK.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonOK.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_confirm
+        Me.ButtonOK.Image = Global.Final_Account_Defense_Barrier.UIArt.button_confirm
         Me.ButtonOK.Location = New System.Drawing.Point(273, 334)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(112, 61)
@@ -80,7 +80,7 @@ Partial Class MSGBOXXX
         '
         Me.ButtonCancel.BackColor = System.Drawing.Color.Black
         Me.ButtonCancel.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_Cancel
+        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.UIArt.button_Cancel
         Me.ButtonCancel.Location = New System.Drawing.Point(403, 334)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(112, 61)
@@ -92,7 +92,7 @@ Partial Class MSGBOXXX
         '
         Me.ButtonYes.BackColor = System.Drawing.Color.Black
         Me.ButtonYes.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonYes.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_yes
+        Me.ButtonYes.Image = Global.Final_Account_Defense_Barrier.UIArt.button_yes
         Me.ButtonYes.Location = New System.Drawing.Point(142, 334)
         Me.ButtonYes.Name = "ButtonYes"
         Me.ButtonYes.Size = New System.Drawing.Size(112, 61)
@@ -127,7 +127,7 @@ Partial Class MSGBOXXX
         '
         Me.ButtonNo.BackColor = System.Drawing.Color.Black
         Me.ButtonNo.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonNo.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_no
+        Me.ButtonNo.Image = Global.Final_Account_Defense_Barrier.UIArt.button_no
         Me.ButtonNo.Location = New System.Drawing.Point(403, 334)
         Me.ButtonNo.Name = "ButtonNo"
         Me.ButtonNo.Size = New System.Drawing.Size(112, 61)

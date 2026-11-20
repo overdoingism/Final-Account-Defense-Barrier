@@ -101,7 +101,7 @@ Partial Class FormFileExplorer
         'LSCBBAR
         '
         Me.LSCBBAR.BackColor = System.Drawing.Color.Black
-        Me.LSCBBAR.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.SCB_BAR
+        Me.LSCBBAR.Image = Global.Final_Account_Defense_Barrier.UIArt.SCB_BAR
         Me.LSCBBAR.Location = New System.Drawing.Point(1508, 312)
         Me.LSCBBAR.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.LSCBBAR.Name = "LSCBBAR"
@@ -112,7 +112,7 @@ Partial Class FormFileExplorer
         'LSCBD
         '
         Me.LSCBD.BackColor = System.Drawing.Color.Black
-        Me.LSCBD.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.SCB_S_DW
+        Me.LSCBD.Image = Global.Final_Account_Defense_Barrier.UIArt.SCB_S_DW
         Me.LSCBD.Location = New System.Drawing.Point(1508, 854)
         Me.LSCBD.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.LSCBD.Name = "LSCBD"
@@ -123,7 +123,7 @@ Partial Class FormFileExplorer
         'LSCBU
         '
         Me.LSCBU.BackColor = System.Drawing.Color.Black
-        Me.LSCBU.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.SCB_S_UP
+        Me.LSCBU.Image = Global.Final_Account_Defense_Barrier.UIArt.SCB_S_UP
         Me.LSCBU.Location = New System.Drawing.Point(1508, 282)
         Me.LSCBU.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.LSCBU.Name = "LSCBU"
@@ -134,7 +134,7 @@ Partial Class FormFileExplorer
         'LSCBBACK
         '
         Me.LSCBBACK.BackColor = System.Drawing.Color.Black
-        Me.LSCBBACK.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.SCB_BARV
+        Me.LSCBBACK.Image = Global.Final_Account_Defense_Barrier.UIArt.SCB_BARV
         Me.LSCBBACK.Location = New System.Drawing.Point(1508, 312)
         Me.LSCBBACK.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.LSCBBACK.Name = "LSCBBACK"
@@ -146,7 +146,7 @@ Partial Class FormFileExplorer
         '
         Me.ButtonCancel.BackColor = System.Drawing.Color.Black
         Me.ButtonCancel.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_Cancel
+        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.UIArt.button_Cancel
         Me.ButtonCancel.Location = New System.Drawing.Point(242, 788)
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.ButtonCancel.Name = "ButtonCancel"
@@ -158,7 +158,7 @@ Partial Class FormFileExplorer
         '
         Me.ButtonFileOpen.BackColor = System.Drawing.Color.Black
         Me.ButtonFileOpen.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonFileOpen.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_OpenF
+        Me.ButtonFileOpen.Image = Global.Final_Account_Defense_Barrier.UIArt.button_OpenF
         Me.ButtonFileOpen.Location = New System.Drawing.Point(37, 788)
         Me.ButtonFileOpen.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.ButtonFileOpen.Name = "ButtonFileOpen"
@@ -168,7 +168,7 @@ Partial Class FormFileExplorer
         '
         'PicFileExp
         '
-        Me.PicFileExp.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.File_expo_New
+        Me.PicFileExp.Image = Global.Final_Account_Defense_Barrier.UIArt.File_expo_New
         Me.PicFileExp.Location = New System.Drawing.Point(0, 0)
         Me.PicFileExp.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
         Me.PicFileExp.Name = "PicFileExp"

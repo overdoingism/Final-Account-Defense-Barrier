@@ -79,6 +79,7 @@
 4. "SALT:xx.." sets the salt, allowing any characters except spaces and colons.
 5. "LANG:filename" loads a custom language file. (Effective for text messages only)
 6. "KDF:n" sets the default KDF mode (1 = MAGI-Crypt / 2 = Legacy (v1.3) / 3 = RFC2898).
+7. "NODPI" turns off high-DPI support and lets Windows stretch the window as before. (Use it if the display looks wrong on a high-DPI screen.)
 
 ## For Developers
 

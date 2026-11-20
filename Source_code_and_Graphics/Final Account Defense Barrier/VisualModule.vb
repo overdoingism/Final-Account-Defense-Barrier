@@ -3,6 +3,148 @@ Imports System.Runtime.InteropServices
 
 Module VisualModule
 
+    '================ The program's own icon as the window icon ==============
+    '
+    ' The icon Explorer shows (fadb4.ico, compiled into the exe as its Win32 icon) is also the icon of the
+    ' windows. It is read from the exe at start-up instead of being stored a second time in FormMain's resources.
+    '
+    ' That icon file keeps all its sizes PNG-compressed, which is fine for Windows but not for System.Drawing.Icon:
+    ' it reads a small PNG-compressed size as if it were a plain bitmap and draws noise. So every size below
+    ' 256 pixels is unpacked here into the plain 32-bit bitmap form (the form the icon in the resources had);
+    ' the 256-pixel size stays as it is, as it was there too.
+
+    <DllImport("kernel32.dll", SetLastError:=True)>
+    Private Function FindResource(hModule As IntPtr, lpName As IntPtr, lpType As IntPtr) As IntPtr
+    End Function
+
+    <DllImport("kernel32.dll", SetLastError:=True)>
+    Private Function LoadResource(hModule As IntPtr, hResInfo As IntPtr) As IntPtr
+    End Function
+
+    <DllImport("kernel32.dll")>
+    Private Function LockResource(hResData As IntPtr) As IntPtr
+    End Function
+
+    <DllImport("kernel32.dll", SetLastError:=True)>
+    Private Function SizeofResource(hModule As IntPtr, hResInfo As IntPtr) As Integer
+    End Function
+
+    Private Const RT_ICON As Integer = 3
+    Private Const RT_GROUP_ICON As Integer = 14
+    Private Const IDI_APPLICATION As Integer = 32512       'the id the compiler gives the application icon
+
+    Private _programIcon As Icon = Nothing
+    Private _programIconTried As Boolean = False
+
+    Private Function Win32Resource(hModule As IntPtr, Id As Integer, ResType As Integer) As Byte()
+        Dim hInfo As IntPtr = FindResource(hModule, New IntPtr(Id), New IntPtr(ResType))
+        If hInfo = IntPtr.Zero Then Return Nothing
+        Dim Size As Integer = SizeofResource(hModule, hInfo)
+        Dim hData As IntPtr = LoadResource(hModule, hInfo)
+        If hData = IntPtr.Zero OrElse Size <= 0 Then Return Nothing
+        Dim P As IntPtr = LockResource(hData)
+        If P = IntPtr.Zero Then Return Nothing
+        Dim B(Size - 1) As Byte
+        Marshal.Copy(P, B, 0, Size)
+        Return B
+    End Function
+
+    ''' <summary>One PNG-compressed icon picture as the plain bitmap form of an icon file: header, 32-bit pixels, mask.</summary>
+    Private Function IconPictureAsBitmap(Png() As Byte) As Byte()
+        Using Ms As New IO.MemoryStream(Png)
+            Using Src As New Bitmap(Ms)
+                Dim W As Integer = Src.Width, H As Integer = Src.Height
+                Dim Pix(W * H * 4 - 1) As Byte
+                Dim BD As BitmapData = Src.LockBits(New Rectangle(0, 0, W, H), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb)
+                For y As Integer = 0 To H - 1
+                    Marshal.Copy(IntPtr.Add(BD.Scan0, y * BD.Stride), Pix, y * W * 4, W * 4)
+                Next
+                Src.UnlockBits(BD)
+                Dim MaskRow As Integer = ((W + 31) \ 32) * 4
+                Dim Res(40 + W * H * 4 + MaskRow * H - 1) As Byte
+                Array.Copy(BitConverter.GetBytes(40), 0, Res, 0, 4)              'BITMAPINFOHEADER
+                Array.Copy(BitConverter.GetBytes(W), 0, Res, 4, 4)
+                Array.Copy(BitConverter.GetBytes(H * 2), 0, Res, 8, 4)           'picture and mask, one above the other
+                Array.Copy(BitConverter.GetBytes(CShort(1)), 0, Res, 12, 2)
+                Array.Copy(BitConverter.GetBytes(CShort(32)), 0, Res, 14, 2)
+                Array.Copy(BitConverter.GetBytes(W * H * 4), 0, Res, 20, 4)      'size of the pixels, as icon editors write it
+                For y As Integer = 0 To H - 1                                    'rows run bottom-up
+                    Array.Copy(Pix, (H - 1 - y) * W * 4, Res, 40 + y * W * 4, W * 4)
+                    For x As Integer = 0 To W - 1
+                        If Pix(((H - 1 - y) * W + x) * 4 + 3) = 0 Then
+                            Res(40 + W * H * 4 + y * MaskRow + x \ 8) = Res(40 + W * H * 4 + y * MaskRow + x \ 8) Or CByte(&H80 >> (x Mod 8))
+                        End If
+                    Next
+                Next
+                Return Res
+            End Using
+        End Using
+    End Function
+
+    ''' <summary>
+    ''' The program's own icon (all its sizes), or Nothing if it cannot be read - the windows then keep the
+    ''' default icon. Read once.
+    ''' </summary>
+    Public Function ProgramIcon() As Icon
+
+        If _programIconTried Then Return _programIcon
+        _programIconTried = True
+
+        Try
+            Dim hModule As IntPtr = Marshal.GetHINSTANCE(GetType(VisualModule).Module)
+            If hModule = IntPtr.Zero OrElse hModule = New IntPtr(-1) Then Return Nothing
+
+            ' the icon group lists the sizes; each size is an icon resource of its own
+            Dim Group() As Byte = Win32Resource(hModule, IDI_APPLICATION, RT_GROUP_ICON)
+            If Group Is Nothing OrElse Group.Length < 6 Then Return Nothing
+            Dim Count As Integer = BitConverter.ToUInt16(Group, 4)
+            If Count = 0 OrElse Group.Length < 6 + Count * 14 Then Return Nothing
+
+            Dim Pictures As New List(Of Byte())
+            Dim Unpacked As New List(Of Boolean)
+            For i As Integer = 0 To Count - 1
+                Dim Pic() As Byte = Win32Resource(hModule, BitConverter.ToUInt16(Group, 6 + i * 14 + 12), RT_ICON)
+                If Pic Is Nothing Then Return Nothing
+                Dim IsPng As Boolean = Pic.Length > 8 AndAlso Pic(0) = &H89 AndAlso Pic(1) = &H50 AndAlso Pic(2) = &H4E AndAlso Pic(3) = &H47
+                Dim Unpack As Boolean = IsPng AndAlso Group(6 + i * 14) <> 0                      'width 0 = 256 pixels: stays PNG
+                If Unpack Then Pic = IconPictureAsBitmap(Pic)
+                Pictures.Add(Pic)
+                Unpacked.Add(Unpack)
+            Next
+
+            ' put together as an icon file: header, one entry per size, the pictures
+            Using Ms As New IO.MemoryStream()
+                Dim Bw As New IO.BinaryWriter(Ms)
+                Bw.Write(Group, 0, 6)
+                Dim Offset As Integer = 6 + Count * 16
+                For i As Integer = 0 To Count - 1
+                    Bw.Write(Group, 6 + i * 14, 4)                              'width, height, colours, reserved
+                    If Unpacked(i) Then
+                        Bw.Write(CUShort(1))
+                        Bw.Write(CUShort(32))
+                    Else
+                        Bw.Write(Group, 6 + i * 14 + 4, 4)                      'planes, bits per pixel
+                    End If
+                    Bw.Write(CUInt(Pictures(i).Length))
+                    Bw.Write(CUInt(Offset))
+                    Offset += Pictures(i).Length
+                Next
+                For Each Pic As Byte() In Pictures
+                    Bw.Write(Pic)
+                Next
+                Bw.Flush()
+                Ms.Position = 0
+                _programIcon = New Icon(Ms)
+            End Using
+
+        Catch ex As Exception
+            _programIcon = Nothing
+        End Try
+
+        Return _programIcon
+
+    End Function
+
     '================ For window grayed out visual ==============
 
     <DllImport("Shcore.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
@@ -44,6 +186,9 @@ Module VisualModule
         Dim scaleFactor As DEVICE_SCALE_FACTOR
         GetScaleFactorForMonitor(hMon, scaleFactor)
         ScaleFolat = scaleFactor / 100
+
+        ' A DPI-aware process already works in real screen pixels: no conversion is needed for screen capture.
+        If UIArt.DpiAware Then ScaleFolat = 1.0F
 
     End Sub
 
@@ -104,6 +249,24 @@ Module VisualModule
 
         ' 釋放資源
         graphics.Dispose()
+
+        ' Let the brightened plate shine a little into its dark lettering (the same glow filter as the windows).
+        Try
+            ' Half the reach of the window glow: the light seeps in from the edges of the dark
+            ' lettering while the middle of the strokes stays black.
+            Using Glowed As Bitmap = UIArt.Glow(targetBitmap, Math.Max(0.5F, UIArt.Scale * 0.5F))
+                ' blended in at half strength: the full glow is too strong on a small button
+                Using g2 As Graphics = Graphics.FromImage(targetBitmap)
+                    Dim Half As New Imaging.ColorMatrix()
+                    Half.Matrix33 = 0.5F
+                    Using ia As New Imaging.ImageAttributes()
+                        ia.SetColorMatrix(Half)
+                        g2.DrawImage(Glowed, New Rectangle(0, 0, targetBitmap.Width, targetBitmap.Height), 0, 0, targetBitmap.Width, targetBitmap.Height, GraphicsUnit.Pixel, ia)
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
 
         ' 顯示調整後的圖像
         Return targetBitmap
@@ -223,229 +386,27 @@ Module VisualModule
         bmpOrg = ResizeBitmap(bmpOrg, 1 / ScaleFolat, 1 / ScaleFolat)
         '使用Graphics將原始圖片繪製到Bitmap中，同時應用ImageAttributes
         g.DrawImage(bmpOrg, New Rectangle(0, 0, bmpOrg.Width, bmpOrg.Height), 0, 0, bmpOrg.Width, bmpOrg.Height, GraphicsUnit.Pixel, imageAttributes)
+        g.Dispose()
+
+        ' The darkening above also removes the faint glow around the shapes. When Windows still
+        ' stretched (blurred) the whole window that went unnoticed; on a sharp picture the result looks
+        ' like the artwork before the glow filter. So the glow is applied again to the grey picture.
+        Try
+            Using Glowed As Bitmap = UIArt.Glow(newBitmap)
+                Dim Result As Bitmap = Glowed.Clone(New Rectangle(0, 0, newBitmap.Width, newBitmap.Height), Imaging.PixelFormat.Format32bppArgb)
+                newBitmap.Dispose()
+                Return Result
+            End Using
+        Catch ex As Exception
+        End Try
 
         Return newBitmap
 
     End Function
 
-    Private Function CenterBitmapInNewImage(ByVal originalBmp As Bitmap) As Bitmap
-
-        ' 設定新圖片的大小，寬高各加 6
-        Dim newWidth As Integer = originalBmp.Width + 6
-        Dim newHeight As Integer = originalBmp.Height + 6
-        Dim newBmp As New Bitmap(newWidth, newHeight)
-
-        ' 使用 Graphics 將原始圖片繪製到新圖片的中間位置
-        Using g As Graphics = Graphics.FromImage(newBmp)
-
-            g.Clear(Color.FromArgb(0, 0, 0, 0))
-
-            ' 計算置中的位置
-            Dim x As Integer = (newWidth - originalBmp.Width) \ 2
-            Dim y As Integer = (newHeight - originalBmp.Height) \ 2
-
-            ' 繪製原始圖片到新圖片中
-            g.DrawImage(originalBmp, x, y)
-        End Using
-
-        ' 返回新圖片
-        Return newBmp
-    End Function
-
-    Public Function CropBitmap(ByVal original As Bitmap) As Bitmap
-        ' 定義要裁剪的區域 (原圖尺寸減去上下左右各 2 像素)
-        Dim cropArea As New Rectangle(3, 3, original.Width - 4, original.Height - 4)
-
-        ' 創建一個新 Bitmap，尺寸為裁剪區域的尺寸
-        Dim croppedBitmap As New Bitmap(cropArea.Width, cropArea.Height)
-
-        ' 使用 Graphics 將原始圖片的裁剪區域繪製到新 Bitmap 上
-        Using g As Graphics = Graphics.FromImage(croppedBitmap)
-            g.DrawImage(original, New Rectangle(0, 0, croppedBitmap.Width, croppedBitmap.Height), cropArea, GraphicsUnit.Pixel)
-        End Using
-
-        ' 返回裁剪後的 Bitmap
-        Return croppedBitmap
-    End Function
-
-
+    ' The glow filter itself moved to UIArtGlow.vb, where it also handles high-DPI pictures.
     Public Function The_Shine_Visual_Filter2(orgbitmap As Bitmap) As Bitmap
-
-        Dim bmp1 As Bitmap = CenterBitmapInNewImage(orgbitmap)
-
-        ' 鎖定 Bitmap 的位元
-        Dim rect As New Rectangle(0, 0, bmp1.Width, bmp1.Height)
-        Dim bmpData1 As System.Drawing.Imaging.BitmapData = bmp1.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp1.PixelFormat)
-        Dim St1 As Integer = bmpData1.Stride
-
-        ' 取得第一行的位址
-        Dim ptr1 As IntPtr = bmpData1.Scan0
-
-        ' 宣告一個陣列來儲存 Bitmap 的字節
-        Dim bytes1 As Integer = Math.Abs(St1) * bmp1.Height
-        Dim rgbValues1(bytes1 - 1) As Byte
-
-        ' 將 RGB 值複製到陣列中
-        System.Runtime.InteropServices.Marshal.Copy(ptr1, rgbValues1, 0, bytes1)
-
-        Dim rgbValues2 As Single()
-        rgbValues2 = Byte2Single(rgbValues1)
-
-
-        Dim TheMartix() As Single = {0.003F, 0.006F, 0.012F, 0.018F, 0.012F, 0.006F, 0.003F,
-                                     0.006F, 0.012F, 0.018F, 0.038F, 0.018F, 0.012F, 0.006F,
-                                     0.012F, 0.018F, 0.038F, 0.12F, 0.038F, 0.018F, 0.012F,
-                                     0.018F, 0.038F, 0.12F, 0.0F, 0.12F, 0.038F, 0.018F,
-                                     0.012F, 0.018F, 0.038F, 0.12F, 0.038F, 0.018F, 0.012F,
-                                     0.006F, 0.012F, 0.018F, 0.038F, 0.018F, 0.012F, 0.006F,
-                                     0.003F, 0.006F, 0.012F, 0.018F, 0.012F, 0.006F, 0.003F}
-
-
-        Dim xyPos, xyPosShift As Integer
-        Dim xyPosRGB(2) As Single
-        Dim Stride7Pos() As Integer = {St1 * -3, St1 * -2, St1 * -1, 0, St1 * 1, St1 * 2, St1 * 3}
-        Dim Y_Scan_Pos As Integer
-        Dim TheMartixCount As Integer
-
-        'Dim AreaBrightest() As Single
-        Dim ByteWidth As Integer = 4
-        Dim Factory1 As Single = 0.9787
-        Dim passMode As Integer
-
-        'ReDim AreaBrightest(2)
-
-        'Search Area Brightest
-        Dim BrightestMap(rgbValues1.GetUpperBound(0)) As Byte
-        Dim BrightestMapSng() As Single
-        For IDX_Y As Integer = 3 To bmp1.Height - 4
-            For IDX_X As Integer = 3 To bmp1.Width - 4
-                xyPos = (IDX_Y * St1) + (IDX_X * ByteWidth)
-                For Y_Scan As Integer = St1 * -3 To St1 * 3 Step St1
-                    Y_Scan_Pos = xyPos + Y_Scan
-                    For X_Scan_Pos As Integer = -12 To 12 Step ByteWidth
-                        xyPosShift = Y_Scan_Pos + X_Scan_Pos
-                        BrightestMap(xyPos) = Math.Max(rgbValues1(xyPosShift), BrightestMap(xyPos))
-                        BrightestMap(xyPos + 1) = Math.Max(rgbValues1(xyPosShift + 1), BrightestMap(xyPos + 1))
-                        BrightestMap(xyPos + 2) = Math.Max(rgbValues1(xyPosShift + 2), BrightestMap(xyPos + 2))
-                    Next
-                Next
-
-            Next
-        Next
-        BrightestMapSng = Byte2Single(BrightestMap)
-
-        'Pass1
-        For IDX_Y As Integer = 3 To bmp1.Height - 4
-            For IDX_X As Integer = 3 To bmp1.Width - 4
-
-                xyPos = (IDX_Y * St1) + (IDX_X * ByteWidth)
-
-                passMode = 0
-                If rgbValues1(xyPos) = 0 AndAlso rgbValues1(xyPos + 1) = 0 AndAlso rgbValues1(xyPos + 2) = 0 Then
-                    passMode = 1
-                ElseIf rgbValues1(xyPos + 3) = 0 Then
-                    passMode = 1
-                End If
-
-                If passMode = 1 Then
-
-                    rgbValues2(0) = CSng(rgbValues1(xyPos))
-                    rgbValues2(1) = CSng(rgbValues1(xyPos + 1))
-                    rgbValues2(2) = CSng(rgbValues1(xyPos + 2))
-
-                Else
-
-                    xyPosRGB(0) = CSng(rgbValues1(xyPos))
-                    xyPosRGB(1) = CSng(rgbValues1(xyPos + 1))
-                    xyPosRGB(2) = CSng(rgbValues1(xyPos + 2))
-
-                    TheMartixCount = 0
-                    For Y_Scan As Integer = 0 To 6
-
-                        Y_Scan_Pos = xyPos + Stride7Pos(Y_Scan)
-
-                        For X_Scan_Pos As Integer = -12 To 12 Step ByteWidth
-
-                            xyPosShift = Y_Scan_Pos + X_Scan_Pos
-
-                            rgbValues2(xyPosShift) = Math.Min((rgbValues2(xyPosShift) + (xyPosRGB(0) * TheMartix(TheMartixCount))) * Factory1, BrightestMapSng(xyPosShift))
-                            rgbValues2(xyPosShift + 1) = Math.Min((rgbValues2(xyPosShift + 1) + (xyPosRGB(1) * TheMartix(TheMartixCount))) * Factory1, BrightestMapSng(xyPosShift + 1))
-                            rgbValues2(xyPosShift + 2) = Math.Min((rgbValues2(xyPosShift + 2) + (xyPosRGB(2) * TheMartix(TheMartixCount))) * Factory1, BrightestMapSng(xyPosShift + 2))
-
-                            TheMartixCount += 1
-                        Next
-                    Next
-                End If
-
-            Next
-        Next
-
-        'Pass2 
-        For IDX_Y As Integer = 0 To bmp1.Height - 1
-            For IDX_X As Integer = 0 To bmp1.Width - 1
-
-                xyPos = (IDX_Y * St1) + (IDX_X * ByteWidth)
-                passMode = 0
-
-                If CInt(rgbValues1(xyPos)) + CInt(rgbValues1(xyPos + 2)) = 0 Then
-                    If rgbValues1(xyPos + 1) = 255 Then
-                        rgbValues2(xyPos) = 0
-                        rgbValues2(xyPos + 1) = 255
-                        rgbValues2(xyPos + 2) = 0
-                        passMode = 1
-                    End If
-                End If
-
-
-                If passMode = 0 Then
-                    rgbValues2(xyPos) = Math.Max(rgbValues1(xyPos), rgbValues2(xyPos))
-                    rgbValues2(xyPos + 1) = Math.Max(rgbValues1(xyPos + 1), rgbValues2(xyPos + 1))
-                    rgbValues2(xyPos + 2) = Math.Max(rgbValues1(xyPos + 2), rgbValues2(xyPos + 2))
-                End If
-
-            Next
-        Next
-
-        rgbValues1 = Single2Byte(rgbValues2)
-
-        ' 將修改過的 RGB 值複製回 Bitmap
-        System.Runtime.InteropServices.Marshal.Copy(rgbValues1, 0, ptr1, bytes1)
-
-        ' 解鎖位元
-        bmp1.UnlockBits(bmpData1)
-
-        bmp1 = CropBitmap(bmp1)
-        '-----------
-        'bmp1.Save("Test_image.png", Imaging.ImageFormat.Png)
-
-        Return bmp1
-
-    End Function
-
-    Public Function Byte2Single(InputByte() As Byte) As Single()
-
-        Dim UpCount As Integer = InputByte.Length - 1
-        Dim TmpSingle(UpCount) As Single
-
-        For IDX As Integer = 0 To UpCount
-            TmpSingle(IDX) = CSng(InputByte(IDX))
-        Next
-
-        Return TmpSingle
-
-    End Function
-
-    Public Function Single2Byte(InputSng() As Single) As Byte()
-
-        Dim UpCount As Integer = InputSng.Length - 1
-        Dim TmpByte(UpCount) As Byte
-
-        For IDX As Integer = 0 To UpCount
-            TmpByte(IDX) = CByte(InputSng(IDX))
-        Next
-
-        Return TmpByte
-
+        Return UIArt.Glow(orgbitmap)
     End Function
 
     Public FormLoginBitmap0 As Bitmap
@@ -457,33 +418,81 @@ Module VisualModule
     Public FormFileExpBitmap As Bitmap
     Public FormMITBitmap As Bitmap
 
+    ''' <summary>
+    ''' Starts rendering the UI pictures on background threads as soon as the program starts, so that
+    ''' they are ready (or well under way) when the windows ask for them. Order: what the login window
+    ''' needs first, then the small pictures (buttons ...), then the windows that come after login.
+    ''' Nothing depends on this having finished: a picture that is not ready is rendered on demand.
+    ''' </summary>
+    Public Sub Start_PreRender(ThreadCount As Integer)
+
+        Dim Jobs As New Queue(Of Action)
+        Jobs.Enqueue(Sub() Load_Bitmap_For_Threads(0))      'login window
+        Jobs.Enqueue(Sub() Load_Bitmap_For_Threads(7))      'file explorer (opened from the login window)
+        For Each N As String In UIArt.CacheableNames()
+            Dim PicName As String = N
+            Jobs.Enqueue(Sub() UIArt.Img(PicName).Dispose())
+        Next
+        Jobs.Enqueue(Sub() Load_Bitmap_For_Threads(5))      'key derivation window
+        Jobs.Enqueue(Sub() Load_Bitmap_For_Threads(6))      'main window
+
+        For i As Integer = 1 To Math.Max(1, ThreadCount)
+            Dim T As New Threading.Thread(
+                Sub()
+                    Do
+                        Dim Job As Action
+                        SyncLock Jobs
+                            If Jobs.Count = 0 Then Exit Do
+                            Job = Jobs.Dequeue()
+                        End SyncLock
+                        Try
+                            Job()
+                        Catch ex As Exception
+                            'whatever failed here is rendered again (and reported) when it is needed
+                        End Try
+                    Loop
+                End Sub)
+            T.IsBackground = True
+            T.Start()
+        Next
+
+    End Sub
+
+    Private ReadOnly BitmapLoadLocks() As Object = {New Object, New Object, New Object, New Object, New Object,
+                                                   New Object, New Object, New Object, New Object}
+
+    ' Each background is produced once; a second request (another thread, or the same form opened
+    ' again) waits for / reuses the first result instead of rendering and filtering it again.
     Public Sub Load_Bitmap_For_Threads(WhatToLoad As Integer)
 
+        SyncLock BitmapLoadLocks(WhatToLoad)
         Select Case WhatToLoad
 
             Case 0
-                FormLoginBitmap0 = The_Shine_Visual_Filter2(My.Resources.Resource1.Title_LOGIN)
+                If FormLoginBitmap0 Is Nothing Then FormLoginBitmap0 = The_Shine_Visual_Filter2(UIArt.Window("Title_LOGIN"))
             Case 1
-                FormLoginBitmap13 = The_Shine_Visual_Filter2(My.Resources.Resource1.Title_NORMAL)
+                If FormLoginBitmap13 Is Nothing Then FormLoginBitmap13 = The_Shine_Visual_Filter2(UIArt.Window("Title_NORMAL"))
             Case 2
-                FormLoginBitmap2 = The_Shine_Visual_Filter2(My.Resources.Resource1.Title_Password)
+                If FormLoginBitmap2 Is Nothing Then FormLoginBitmap2 = The_Shine_Visual_Filter2(UIArt.Window("Title_Password"))
             Case 4
-                FormConfigBitmap = The_Shine_Visual_Filter2(My.Resources.Resource1.Form_Config)
+                If FormConfigBitmap Is Nothing Then FormConfigBitmap = The_Shine_Visual_Filter2(UIArt.Window("Form_Config"))
             Case 5
-                FormKDFBitmap = The_Shine_Visual_Filter2(My.Resources.Resource1.PWD_KDF)
+                If FormKDFBitmap Is Nothing Then FormKDFBitmap = The_Shine_Visual_Filter2(UIArt.Window("PWD_KDF"))
             Case 6
-                FormMainBitmap = The_Shine_Visual_Filter2(My.Resources.Resource1.Form_Main)
+                If FormMainBitmap Is Nothing Then FormMainBitmap = The_Shine_Visual_Filter2(UIArt.Window("Form_Main"))
             Case 7
-                FormFileExpBitmap = The_Shine_Visual_Filter2(My.Resources.Resource1.File_expo_New)
+                If FormFileExpBitmap Is Nothing Then FormFileExpBitmap = The_Shine_Visual_Filter2(UIArt.Window("File_expo_New"))
             Case 8
-                FormMITBitmap = The_Shine_Visual_Filter2(My.Resources.Resource1.mit_lic)
+                If FormMITBitmap Is Nothing Then FormMITBitmap = The_Shine_Visual_Filter2(UIArt.Window("mit_lic"))
         End Select
+        End SyncLock
 
     End Sub
 
     Public Function CountDownOnImg(OrigBmp As Bitmap, WhatStrOn As String, FontSize As Integer) As Bitmap
 
-        Dim RndFnt() As Font = {New System.Drawing.Font("Arial", FontSize, FontStyle.Bold)}
+        ' Font size in pixels so that it follows the DPI-scaled button picture.
+        Dim RndFnt() As Font = {New System.Drawing.Font("Arial", CSng(FontSize * 96.0F / 72.0F * UIArt.Scale), FontStyle.Bold, GraphicsUnit.Pixel)}
 
         Dim BitA As New Bitmap(OrigBmp)
         Dim GrA As Graphics = Graphics.FromImage(BitA)
@@ -497,7 +506,7 @@ Module VisualModule
         Dim textSize As SizeF = GrA.MeasureString(WhatStrOn, RndFnt(0), Nothing, Nothing, 1, 1)
         'GrA.DrawString(WhatStrOn, RndFnt(0), Brs1, (BitA.Width / 2) - (textSize.Width / 2), (BitA.Height / 2) - (textSize.Height / 2) + 5)
 
-        Dim borderSize As Single = 2.0F
+        Dim borderSize As Single = 2.0F * UIArt.Scale
 
         For x As Integer = -1 To 1
             For y As Integer = -1 To 1

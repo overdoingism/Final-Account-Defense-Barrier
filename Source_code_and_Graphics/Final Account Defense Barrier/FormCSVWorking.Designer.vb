@@ -44,7 +44,7 @@ Partial Class FormCSVWorking
         '
         'PictureMode
         '
-        Me.PictureMode.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.CSV_IMP
+        Me.PictureMode.Image = Global.Final_Account_Defense_Barrier.UIArt.CSV_IMP
         Me.PictureMode.Location = New System.Drawing.Point(306, 52)
         Me.PictureMode.Name = "PictureMode"
         Me.PictureMode.Size = New System.Drawing.Size(135, 41)
@@ -53,7 +53,7 @@ Partial Class FormCSVWorking
         '
         'PictureBox1
         '
-        Me.PictureBox1.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.CSV_Waiting
+        Me.PictureBox1.Image = Global.Final_Account_Defense_Barrier.UIArt.CSV_Waiting
         Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(452, 142)

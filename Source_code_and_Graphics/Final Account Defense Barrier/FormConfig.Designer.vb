@@ -146,7 +146,7 @@ Partial Class FormConfig
         '
         Me.ButtonCSVEx.BackColor = System.Drawing.Color.Black
         Me.ButtonCSVEx.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonCSVEx.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_CAT_CSVEX
+        Me.ButtonCSVEx.Image = Global.Final_Account_Defense_Barrier.UIArt.button_CAT_CSVEX
         Me.ButtonCSVEx.Location = New System.Drawing.Point(568, 177)
         Me.ButtonCSVEx.Name = "ButtonCSVEx"
         Me.ButtonCSVEx.Size = New System.Drawing.Size(112, 61)
@@ -157,7 +157,7 @@ Partial Class FormConfig
         '
         Me.ButtonCSVIM.BackColor = System.Drawing.Color.Black
         Me.ButtonCSVIM.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonCSVIM.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_CAT_CSVIM
+        Me.ButtonCSVIM.Image = Global.Final_Account_Defense_Barrier.UIArt.button_CAT_CSVIM
         Me.ButtonCSVIM.Location = New System.Drawing.Point(451, 177)
         Me.ButtonCSVIM.Name = "ButtonCSVIM"
         Me.ButtonCSVIM.Size = New System.Drawing.Size(112, 61)
@@ -168,7 +168,7 @@ Partial Class FormConfig
         '
         Me.ButtonCancel.BackColor = System.Drawing.Color.Black
         Me.ButtonCancel.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_Cancel
+        Me.ButtonCancel.Image = Global.Final_Account_Defense_Barrier.UIArt.button_Cancel
         Me.ButtonCancel.Location = New System.Drawing.Point(568, 325)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(112, 61)
@@ -179,7 +179,7 @@ Partial Class FormConfig
         '
         Me.ButtonOK.BackColor = System.Drawing.Color.Black
         Me.ButtonOK.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonOK.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_confirm
+        Me.ButtonOK.Image = Global.Final_Account_Defense_Barrier.UIArt.button_confirm
         Me.ButtonOK.Location = New System.Drawing.Point(451, 325)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(112, 61)
@@ -190,7 +190,7 @@ Partial Class FormConfig
         '
         Me.ButtonTransFullCat.BackColor = System.Drawing.Color.Black
         Me.ButtonTransFullCat.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonTransFullCat.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_CAT_TRANS
+        Me.ButtonTransFullCat.Image = Global.Final_Account_Defense_Barrier.UIArt.button_CAT_TRANS
         Me.ButtonTransFullCat.Location = New System.Drawing.Point(451, 110)
         Me.ButtonTransFullCat.Name = "ButtonTransFullCat"
         Me.ButtonTransFullCat.Size = New System.Drawing.Size(112, 61)
@@ -201,7 +201,7 @@ Partial Class FormConfig
         '
         Me.ButtonDelCat.BackColor = System.Drawing.Color.Black
         Me.ButtonDelCat.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.ButtonDelCat.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.button_CAT_DEL
+        Me.ButtonDelCat.Image = Global.Final_Account_Defense_Barrier.UIArt.button_CAT_DEL
         Me.ButtonDelCat.Location = New System.Drawing.Point(568, 110)
         Me.ButtonDelCat.Name = "ButtonDelCat"
         Me.ButtonDelCat.Size = New System.Drawing.Size(112, 61)
@@ -211,7 +211,7 @@ Partial Class FormConfig
         'PictureBoxConfig
         '
         Me.PictureBoxConfig.BackColor = System.Drawing.Color.Lime
-        Me.PictureBoxConfig.Image = Global.Final_Account_Defense_Barrier.My.Resources.Resource1.Form_Config
+        Me.PictureBoxConfig.Image = Global.Final_Account_Defense_Barrier.UIArt.Form_Config
         Me.PictureBoxConfig.Location = New System.Drawing.Point(0, 0)
         Me.PictureBoxConfig.Name = "PictureBoxConfig"
         Me.PictureBoxConfig.Size = New System.Drawing.Size(717, 418)
