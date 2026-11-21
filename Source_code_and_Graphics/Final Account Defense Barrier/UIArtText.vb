@@ -1,6 +1,6 @@
 'MIT License
 'Copyright (c) 2023 overdoingism Labs.
-'https://github.com/overdoignism/Final-Account-Defense-Barrier
+'https://github.com/overdoingism/Final-Account-Defense-Barrier
 
 ' UIArt lettering.
 '

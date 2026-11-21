@@ -13,9 +13,9 @@ v3.2.9821.26490
 
 ---
 
-[★ 若您的防毒程式提出警報，請見此說明](https://github.com/overdoignism/Final-Account-Defense-Barrier/blob/main/Readme/FALSEALERT.md)  
-[★ Refer to this if your antivirus program reports an alert.](https://github.com/overdoignism/Final-Account-Defense-Barrier/blob/main/Readme/FALSEALERT.md)  
-[★ 防毒ソフトが警告を出した場合は、これを参照してください](https://github.com/overdoignism/Final-Account-Defense-Barrier/blob/main/Readme/FALSEALERT.md)
+[★ 若您的防毒程式提出警報，請見此說明](https://github.com/overdoingism/Final-Account-Defense-Barrier/blob/main/Readme/FALSEALERT.md)  
+[★ Refer to this if your antivirus program reports an alert.](https://github.com/overdoingism/Final-Account-Defense-Barrier/blob/main/Readme/FALSEALERT.md)  
+[★ 防毒ソフトが警告を出した場合は、これを参照してください](https://github.com/overdoingism/Final-Account-Defense-Barrier/blob/main/Readme/FALSEALERT.md)
 
 ---
 
@@ -25,13 +25,13 @@ v3.2.9821.26490
 
 ---
 
-[說明文件🔗](https://github.com/overdoignism/Final-Account-Defense-Barrier/blob/main/Readme/README_ZHTW.md)
+[說明文件🔗](https://github.com/overdoingism/Final-Account-Defense-Barrier/blob/main/Readme/README_ZHTW.md)
 
-[Help Document🔗](https://github.com/overdoignism/Final-Account-Defense-Barrier/blob/main/Readme/README_EN.md)
+[Help Document🔗](https://github.com/overdoingism/Final-Account-Defense-Barrier/blob/main/Readme/README_EN.md)
 
-[ヘルプ文書🔗](https://github.com/overdoignism/Final-Account-Defense-Barrier/blob/main/Readme/README_JP.md)
+[ヘルプ文書🔗](https://github.com/overdoingism/Final-Account-Defense-Barrier/blob/main/Readme/README_JP.md)
 
-[歷史版本（History, ZH-TW only）🔗](https://github.com/overdoignism/Final-Account-Defense-Barrier/blob/main/Readme/HISTORY.md)
+[歷史版本（History, ZH-TW only）🔗](https://github.com/overdoingism/Final-Account-Defense-Barrier/blob/main/Readme/HISTORY.md)
 
 ---
 

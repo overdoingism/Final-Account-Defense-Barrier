@@ -6,7 +6,8 @@ name: Build
 #     release = true  → 建置後自動：
 #         1. 更新 bin/ 內的 exe 與 Readme.txt（版本、SHA256）
 #         2. 更新 README.md 的版本號
-#         3. 在 Readme/HISTORY.md 最上面加入本次更新說明（notes）
+#         3. 在 Readme/HISTORY.md 最上面加入本次更新說明（notes）；同一天再次發佈時不新增條目，
+#            只把當天那一條的版本號換成新的、補上還沒寫過的說明
 #         4. commit + push 回 main，並建立 GitHub Release（附 zip）
 #
 # 建置來源證明（artifact attestation）：push 與手動執行時，會為建出的 exe（release 時另含 zip）
@@ -140,19 +141,28 @@ jobs:
           $t = $t -replace '(?m)^(## Final Account Defense Barrier .*? V)\d+\.\d+', "`${1}$mm"
           [IO.File]::WriteAllText($p, $t, $utf8)
 
-          # HISTORY.md：最上面加入本次更新
-          $notes = $env:NOTES.Trim()
-          if ($notes) {
-            $items = @($notes.Split('|') | ForEach-Object { $_.Trim() } | Where-Object { $_ })
-            if ($items.Count -eq 1) { $body = "*  $($items[0])" }
-            else { $i = 0; $body = ($items | ForEach-Object { $i++; "$i. $_" }) -join "`r`n" }
-            $date = (Get-Date).ToString("yyyy/MM/dd")
-            $p = Resolve-Path "Readme/HISTORY.md"
-            $t = [IO.File]::ReadAllText($p, $utf8)
-            if ($t -notmatch "#### v$([regex]::Escape($env:VER)) ") {
-              $t = "#### v$env:VER ($date)`r`n`r`n$body`r`n`r`n" + $t
-              [IO.File]::WriteAllText($p, $t, $utf8)
-            }
+          # HISTORY.md：一天只留一條。最上面那一條若是今天的，就把它的版本號換成這一版、
+          # 還沒寫過的說明接在後面；不是今天的，才在最上面加一條新的（沒有說明就不加）
+          $items = @($env:NOTES.Split('|') | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+          $date = (Get-Date).ToString("yyyy/MM/dd")
+          $p = Resolve-Path "Readme/HISTORY.md"
+          $t = [IO.File]::ReadAllText($p, $utf8)
+          $nl = if ($t.Contains("`r`n")) { "`r`n" } else { "`n" }
+          $all = $items
+          $rest = $t
+          $top = [regex]::Match($t, '\A#### v\d+(?:\.\d+){3} \((\d{4}/\d{2}/\d{2})\)')
+          if ($top.Success -and $top.Groups[1].Value -eq $date) {
+            $next = $t.IndexOf("`n#### ", $top.Length)
+            if ($next -lt 0) { $block = $t.Substring($top.Length); $rest = "" }
+            else { $block = $t.Substring($top.Length, $next + 1 - $top.Length); $rest = $t.Substring($next + 1) }
+            $old = @($block -split '\r?\n' | ForEach-Object { ($_ -replace '^\s*(\*|\d+\.)\s+', '').Trim() } | Where-Object { $_ })
+            $all = @($old) + @($items | Where-Object { $old -notcontains $_ })
+          }
+          if ($all.Count -gt 0) {
+            if ($all.Count -eq 1) { $body = "*  $($all[0])" }
+            else { $i = 0; $body = ($all | ForEach-Object { $i++; "$i. $_" }) -join $nl }
+            $t = "#### v$env:VER ($date)$nl$nl$body$nl$nl" + $rest
+            [IO.File]::WriteAllText($p, $t, $utf8)
           }
           git status --short
 

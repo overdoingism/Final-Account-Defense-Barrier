@@ -6,7 +6,7 @@ Final Account Defense Barrier 最終アカウント防御障壁
 
 Open source with MIT License
 
-https://github.com/overdoignism/Final-Account-Defense-Barrier
+https://github.com/overdoingism/Final-Account-Defense-Barrier
 
 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
 

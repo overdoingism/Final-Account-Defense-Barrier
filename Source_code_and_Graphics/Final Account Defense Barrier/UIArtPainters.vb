@@ -1,6 +1,6 @@
 'MIT License
 'Copyright (c) 2023 overdoingism Labs.
-'https://github.com/overdoignism/Final-Account-Defense-Barrier
+'https://github.com/overdoingism/Final-Account-Defense-Barrier
 
 ' UIArt painters: the parts of the UI artwork that are drawn by code.
 ' Coordinates are 96-DPI design pixels measured from the original artwork.

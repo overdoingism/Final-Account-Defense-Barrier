@@ -1,6 +1,6 @@
 ﻿'MIT License 
 'Copyright (c) 2023 overdoingism Labs.
-'https://github.com/overdoignism/Final-Account-Defense-Barrier
+'https://github.com/overdoingism/Final-Account-Defense-Barrier
 
 
 Imports System.Numerics
@@ -44,7 +44,7 @@ Module CommonModule
     Public Const Quo As String = """"
     Public Const D_vbcrlf As String = vbCrLf + vbCrLf
 
-    Public Const MainWebURL As String = "https://github.com/overdoignism/Final-Account-Defense-Barrier"
+    Public Const MainWebURL As String = "https://github.com/overdoingism/Final-Account-Defense-Barrier"
 
     Public Const File_Limit As Long = 134217728
 
