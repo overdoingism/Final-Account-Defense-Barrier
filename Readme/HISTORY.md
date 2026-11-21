@@ -2,7 +2,7 @@
 
 1. 大幅更新UI底層機制，支援高DPI顯示，並縮小執行檔體積
 2. 修復部份BUG
-3. 為 exe 加上 GitHub 建置來源簽章（artifact attestation）
+3. 為 exe 加上 GitHub 建置來源證明（artifact attestation）
 4. 用語雜項修正
 
 #### v3.1.9815.41648 (2026/11/15)
