@@ -1038,7 +1038,6 @@ Partial Public NotInheritable Class UIArt
 
         Dim BarTop As Single = Top + 16      'bar: 10 px high
         Dim BarBot As Single = Top + 26
-        Dim Mid As Single = Top + 21         'the scale is mirrored around the middle of the bar
 
         ' gradient bar
         cv.GradBoxH(18, BarTop, 516, BarBot,
@@ -1046,43 +1045,101 @@ Partial Public NotInheritable Class UIArt
                     {RGB(&HC00200), RGB(&HCF0F00), RGB(&HE12A00), RGB(&HF14E00), RGB(&HF67800), RGB(&HF29904),
                      RGB(&HDAAF12), RGB(&HB8BF2A), RGB(&H91CC4B), RGB(&H6DD671), RGB(&H58DD8F)})
 
+        ' Up and down, the scale is measured from the bar, the same way above and below it: every stroke
+        ' starts one gap (2 px) away from the bar and runs outwards by its length. (Snapping a stroke's
+        ' far end and its length separately let neighbouring sections end one pixel apart.)
+        Dim UpperEdge As Single = cv.P(BarTop)       'surface coordinates
+        Dim LowerEdge As Single = cv.P(BarBot)
+        Dim Gap As Single = cv.L(2)
+
+        ' Across, the scale is made of 1 px ticks on a 2 px pitch. Where that pitch is a whole number of
+        ' device pixels (100%, 150%, 200% ...) the ticks are snapped to whole pixels like every other rule.
+        ' Where it is not (125%, 175%, 225% ...) snapping would leave gaps of two widths in turn and the
+        ' scale would look bunched in pairs. There the ticks keep their exact place and width and are
+        ' brought to the pixels through a soft filter, the way a much larger drawing is shrunk (SoftTicks).
+        ' The whole scale is moved by a fraction of a pixel so that every tick lies symmetrically on the
+        ' pixel grid (centred on a pixel edge or on a pixel centre): all gaps come out alike.
+        ' The division lines, 25 px apart, stay on whole pixels (nearest to their place in that scale)
+        ' so that they remain sharp.
+        Dim Exact As Boolean = False
+        Dim Shift As Single = 0          'device pixels
+        If cv.Snap Then
+            Dim Pitch As Double = 2.0 * cv.Sc
+            Dim Phases As Integer = 0    'after how many ticks the pixel pattern repeats
+            For q As Integer = 1 To 16
+                If Math.Abs(Pitch * q - Math.Round(Pitch * q)) < 0.001 Then
+                    Phases = q
+                    Exit For
+                End If
+            Next
+            Exact = Phases <> 1
+            If Phases > 1 Then
+                Dim Centre As Double = 19.5 * cv.Sc * Phases          'centre of the first tick, in 1/Phases pixels
+                Shift = CSng((Math.Floor(Centre + 0.5) - Centre) / Phases)
+            End If
+        End If
+
         ' fine scale: one tick every 2 px, growing in four steps towards the "strong" end
+        Dim TickX As New List(Of Single)          'design x of every tick
+        Dim TickLen As New List(Of Single)        'length of its amber part
+        Dim TickExtra As New List(Of Single)      'green extension on the strongest quarter
         For X As Integer = 19 To 515 Step 2
-
-            Dim Len As Single        'length of the amber part
-            Dim Extra As Single = 0  'green extension on the strongest quarter
+            TickX.Add(X)
             If X < 117 Then
-                Len = 2
+                TickLen.Add(2) : TickExtra.Add(0)
             ElseIf X < 317 Then
-                Len = 3
+                TickLen.Add(3) : TickExtra.Add(0)
             ElseIf X < 417 Then
-                Len = 6
+                TickLen.Add(6) : TickExtra.Add(0)
             Else
-                Len = 4
-                Extra = 4
+                TickLen.Add(4) : TickExtra.Add(4)
             End If
-
-            'upper tick ends 2 px above the bar, lower tick starts 2 px below it
-            cv.Bar(Amber, X, BarTop - 2 - Len, X + 1, BarTop - 2)
-            cv.Bar(Amber, X, BarBot + 2, X + 1, BarBot + 2 + Len)
-            If Extra > 0 Then
-                cv.Bar(Mint, X, BarTop - 2 - Len - Extra, X + 1, BarTop - 2 - Len)
-                cv.Bar(Mint, X, BarBot + 2 + Len, X + 1, BarBot + 2 + Len + Extra)
-            End If
-
         Next
 
-        ' division lines every 25 px (through the bar), long ones every 100 px
-        For i As Integer = 1 To 19
-            Dim X As Single = 17 + i * 25
-            If i Mod 4 = 0 Then
-                cv.Bar(Amber, X, Top + 3, X + 1, Top + 39)
-            ElseIf X < 117 Then
-                cv.Bar(Amber, X, BarTop - 4, X + 1, BarBot + 4)
+        ' All sharp strokes of one colour are filled as one shape (they touch and overlap).
+        Using AmberStrokes As New GraphicsPath(FillMode.Winding), MintStrokes As New GraphicsPath(FillMode.Winding)
+
+            If Exact Then
+                SoftTicks(cv, Amber, Mint, Shift, TickX, TickLen, TickExtra, UpperEdge, LowerEdge, Gap)
             Else
-                cv.Bar(Amber, X, BarTop - 5, X + 1, BarBot + 5)
+                For i As Integer = 0 To TickX.Count - 1
+                    Dim sx As Single = cv.P(TickX(i)), sw As Single = cv.L(1)
+                    Dim Len As Single = cv.L(TickLen(i)), Extra As Single = cv.L(TickExtra(i))
+                    AmberStrokes.AddRectangle(New RectangleF(sx, UpperEdge - Gap - Len, sw, Len))
+                    AmberStrokes.AddRectangle(New RectangleF(sx, LowerEdge + Gap, sw, Len))
+                    If Extra > 0 Then
+                        MintStrokes.AddRectangle(New RectangleF(sx, UpperEdge - Gap - Len - Extra, sw, Extra))
+                        MintStrokes.AddRectangle(New RectangleF(sx, LowerEdge + Gap + Len, sw, Extra))
+                    End If
+                Next
             End If
-        Next
+
+            ' division lines every 25 px (through the bar), long ones every 100 px. They reach as far as
+            ' the ticks of the first two sections (2 and 3 px long); the long ones 11 px beyond the gap.
+            For i As Integer = 1 To 19
+                Dim X As Single = 17 + i * 25
+                Dim Reach As Single
+                If i Mod 4 = 0 Then
+                    Reach = Gap + cv.L(11)
+                ElseIf X < 117 Then
+                    Reach = Gap + cv.L(2)
+                Else
+                    Reach = Gap + cv.L(3)
+                End If
+                Dim sx As Single = cv.P(X)
+                If Exact Then sx = CSng(Math.Floor(X * cv.Sc + Shift + 0.5F)) * cv.K
+                AmberStrokes.AddRectangle(New RectangleF(sx, UpperEdge - Reach, cv.L(1), LowerEdge - UpperEdge + 2 * Reach))
+            Next
+
+            ' the long division lines run over the green tick ends: green first
+            Using b As New SolidBrush(Mint)
+                cv.G.FillPath(b, MintStrokes)
+            End Using
+            Using b As New SolidBrush(Amber)
+                cv.G.FillPath(b, AmberStrokes)
+            End Using
+
+        End Using
 
         ' end brackets
         cv.Bar(Amber, 16, Top, 18, Top + 42)
@@ -1092,6 +1149,73 @@ Partial Public NotInheritable Class UIArt
         cv.Claim(15, BarTop - 4, 519, BarBot + 4)
         cv.Claim(15, Top - 1, 19, Top + 43)
         cv.Claim(515, Top - 1, 519, Top + 43)
+
+    End Sub
+
+    ''' <summary>
+    ''' How far the filter of SoftTicks reaches to each side, in design pixels (see there). Tried at 125% and
+    ''' 175% with the glow on: 0.6 still shows thin and thick ticks in turn, 1.0 lets the ticks fade into a band.
+    ''' </summary>
+    Private Const TickSoftness As Double = 0.9
+
+    ''' <summary>Area of the unit tent (a triangle from -1 to 1, area 1) to the left of t.</summary>
+    Private Shared Function TentArea(t As Double) As Double
+        If t <= -1 Then Return 0
+        If t >= 1 Then Return 1
+        If t < 0 Then Return (1 + t) * (1 + t) / 2
+        Return 1 - (1 - t) * (1 - t) / 2
+    End Function
+
+    ''' <summary>
+    ''' The gauge's ticks where their pitch is not a whole number of device pixels. Each tick lies at its
+    ''' exact place (plus Shift device pixels) with its exact width; a pixel column gets the share of the
+    ''' ticks that a tent-shaped filter around its centre sees, as when a much larger drawing is shrunk
+    ''' with a good filter. The filter reaches TickSoftness design pixels to each side: wide enough that a
+    ''' tick lying across two pixels and a tick lying on one look alike once the glow has filled the gaps.
+    ''' Edge = the bar's upper / lower edge, Gap = the gap between bar and ticks (surface coordinates).
+    ''' </summary>
+    Private Shared Sub SoftTicks(cv As ArtCanvas, Amber As Color, Mint As Color, Shift As Single,
+                                 TickX As List(Of Single), TickLen As List(Of Single), TickExtra As List(Of Single),
+                                 UpperEdge As Single, LowerEdge As Single, Gap As Single)
+
+        Dim Reach As Double = Math.Max(0.5, TickSoftness * cv.Sc)            'device pixels
+        Dim First As Integer = CInt(Math.Floor(TickX(0) * cv.Sc + Shift - Reach))
+        Dim Last As Integer = CInt(Math.Ceiling((TickX(TickX.Count - 1) + 1) * cv.Sc + Shift + Reach))
+
+        Dim Tick As Integer = 0
+        For Col As Integer = First To Last
+
+            Dim Mid As Double = Col + 0.5
+
+            ' the tick this column belongs to (its lengths are used): the nearest one
+            Do While Tick < TickX.Count - 1 AndAlso
+                     Math.Abs((TickX(Tick + 1) + 0.5) * cv.Sc + Shift - Mid) < Math.Abs((TickX(Tick) + 0.5) * cv.Sc + Shift - Mid)
+                Tick += 1
+            Loop
+
+            ' what the filter sees of this tick and of its neighbours
+            Dim Share As Double = 0
+            For k As Integer = Math.Max(0, Tick - 2) To Math.Min(TickX.Count - 1, Tick + 2)
+                Dim a As Double = TickX(k) * cv.Sc + Shift, b As Double = a + cv.Sc
+                Share += TentArea((b - Mid) / Reach) - TentArea((a - Mid) / Reach)
+            Next
+            Dim Alpha As Integer = CInt(Math.Round(Math.Min(1.0, Share) * 255))
+            If Alpha <= 0 Then Continue For
+
+            Dim sx As Single = Col * cv.K, sw As Single = cv.K
+            Dim Len As Single = cv.L(TickLen(Tick)), Extra As Single = cv.L(TickExtra(Tick))
+            Using b As New SolidBrush(Color.FromArgb(Alpha, Amber))
+                cv.G.FillRectangle(b, sx, UpperEdge - Gap - Len, sw, Len)
+                cv.G.FillRectangle(b, sx, LowerEdge + Gap, sw, Len)
+            End Using
+            If Extra > 0 Then
+                Using b As New SolidBrush(Color.FromArgb(Alpha, Mint))
+                    cv.G.FillRectangle(b, sx, UpperEdge - Gap - Len - Extra, sw, Extra)
+                    cv.G.FillRectangle(b, sx, LowerEdge + Gap + Len, sw, Extra)
+                End Using
+            End If
+
+        Next
 
     End Sub
 
