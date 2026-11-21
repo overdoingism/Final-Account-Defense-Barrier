@@ -8,6 +8,12 @@ name: Build
 #         2. 更新 README.md 的版本號
 #         3. 在 Readme/HISTORY.md 最上面加入本次更新說明（notes）
 #         4. commit + push 回 main，並建立 GitHub Release（附 zip）
+#
+# 建置來源證明（artifact attestation）：push 與手動執行時，會為建出的 exe（release 時另含 zip）
+# 產生一份由 GitHub 簽署的證明，內容是「這個檔案是本 repo 的這個流程、這個 commit 建置出來的」。
+# 任何人都可以用 GitHub CLI 驗證手上的檔案沒有被換過：
+#     gh attestation verify "Final Account Defense Barrier.exe" -R overdoingism/Final-Account-Defense-Barrier
+# （PR 不產生：來自 fork 的 PR 拿不到簽署用的權杖）
 
 on:
   push:
@@ -32,6 +38,8 @@ on:
 
 permissions:
   contents: write
+  id-token: write        # 向 Sigstore 取得簽署憑證（建置來源證明）
+  attestations: write    # 儲存建置來源證明
 
 concurrency:
   group: build-${{ github.ref }}
@@ -103,6 +111,12 @@ jobs:
           path: ${{ runner.temp }}/pkg/*
           if-no-files-found: error
 
+      - name: Attest build provenance (exe)
+        if: github.event_name != 'pull_request'
+        uses: actions/attest@v4
+        with:
+          subject-path: ${{ runner.temp }}/pkg/Final Account Defense Barrier.exe
+
       # ===== 以下只在手動執行且勾選 release 時進行 =====
 
       - name: Update bin/, README.md, HISTORY.md
@@ -153,6 +167,20 @@ jobs:
           git commit -m "v$env:VER"
           git push origin HEAD:${{ github.ref_name }}
 
+      - name: Make release zip
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        env:
+          VER: ${{ steps.info.outputs.version }}
+        run: |
+          $zip = Join-Path $env:RUNNER_TEMP "Final.Account.Defense.Barrier.v$env:VER.zip"
+          Compress-Archive -Path (Join-Path $env:RUNNER_TEMP "pkg/*") -DestinationPath $zip -Force
+
+      - name: Attest build provenance (zip)
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        uses: actions/attest@v4
+        with:
+          subject-path: ${{ runner.temp }}/Final.Account.Defense.Barrier.v${{ steps.info.outputs.version }}.zip
+
       - name: Create GitHub Release
         if: github.event_name == 'workflow_dispatch' && inputs.release
         env:
@@ -162,10 +190,12 @@ jobs:
           NOTES: ${{ inputs.notes }}
         run: |
           $zip = Join-Path $env:RUNNER_TEMP "Final.Account.Defense.Barrier.v$env:VER.zip"
-          Compress-Archive -Path (Join-Path $env:RUNNER_TEMP "pkg/*") -DestinationPath $zip -Force
           $body = "Final Account Defense Barrier v$env:VER`r`n`r`n"
           $n = $env:NOTES.Trim()
           if ($n) { $body += (($n.Split('|') | ForEach-Object { "* " + $_.Trim() }) -join "`r`n") + "`r`n`r`n" }
-          $body += "SHA256: $env:SHA`r`n"
+          $body += "SHA256: $env:SHA`r`n`r`n"
+          # 不放雙引號（整段會當成一個參數交給 gh）
+          $body += "Verify that this build came from this repository / 驗證建置來源 (GitHub CLI):`r`n`r`n"
+          $body += "    gh attestation verify 'Final Account Defense Barrier.exe' -R $env:GITHUB_REPOSITORY`r`n"
           $sha = git rev-parse HEAD
           gh release create "v$env:VER" $zip --title "v$env:VER" --notes "$body" --target $sha

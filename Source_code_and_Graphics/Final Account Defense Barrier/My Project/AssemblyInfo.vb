@@ -10,8 +10,8 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("")>
 <Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("")>
+<Assembly: AssemblyCompany("overdoingism Lab.")>
+<Assembly: AssemblyProduct("Final Account Defense Barrier")>
 <Assembly: AssemblyCopyright("")>
 <Assembly: AssemblyTrademark("")>
 
