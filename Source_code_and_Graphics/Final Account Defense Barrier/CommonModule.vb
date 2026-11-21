@@ -1,5 +1,5 @@
 ﻿'MIT License 
-'Copyright (c) 2023 overdoingism Labs.
+'Copyright (c) 2023 overdoingism Lab.
 'https://github.com/overdoingism/Final-Account-Defense-Barrier
 
 
@@ -39,7 +39,7 @@ Module CommonModule
     Public Const LangFile_str As String = "LANG"
     Public Const KDFType_str As String = "KDF"
 
-    Public Const Author_str As String = "Final Account Defencse Barrier" + vbCrLf + "Developed by overdoingism Lab."
+    Public Const Author_str As String = "Final Account Defense Barrier" + vbCrLf + "Developed by overdoingism Lab."
 
     Public Const Quo As String = """"
     Public Const D_vbcrlf As String = vbCrLf + vbCrLf

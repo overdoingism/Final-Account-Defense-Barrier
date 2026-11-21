@@ -1,5 +1,5 @@
 'MIT License
-'Copyright (c) 2023 overdoingism Labs.
+'Copyright (c) 2023 overdoingism Lab.
 'https://github.com/overdoingism/Final-Account-Defense-Barrier
 
 ' UIArt painters: the parts of the UI artwork that are drawn by code.
